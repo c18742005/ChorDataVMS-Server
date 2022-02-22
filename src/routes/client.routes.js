@@ -13,6 +13,12 @@ router.get('/clients/:id', clientController.findClientById);
 // Route to update a client by their ID 
 router.put('/clients/:id', clientController.updateClientById);
 
+// Route to deactivate a client by their ID 
+router.put('/clients/deactivate/:id', clientController.deactivateClientById);
+
+// Route to reactivate a client by their ID 
+router.put('/clients/reactivate/:id', clientController.reactivateClientById);
+
 // Route to delete a client by their ID
 router.delete('/clients/:id', clientController.deleteClientById);
 

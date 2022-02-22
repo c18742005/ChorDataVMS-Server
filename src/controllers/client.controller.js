@@ -99,6 +99,61 @@ exports.updateClientById = async (req, res) => {
   res.status(200).send({ message: "Client Updated Successfully!" });
 };
 
+// query to deactivate a client by their ID
+exports.deactivateClientById = async (req, res) => {
+  const clientId = parseInt(req.params.id);
+  const { client_reason_inactive } = req.body;
+
+  const response = await db.query(
+    `UPDATE client 
+    SET 
+      client_inactive = $1,
+      client_reason_inactive = $2
+    WHERE client_id = $3`,
+    [1, client_reason_inactive, clientId]
+  );
+  
+  const response2 = await db.query(
+    `UPDATE patient
+    SET 
+      patient_inactive = $1,
+      patient_reason_inactive = $2
+    WHERE patient_client_id = $3`,
+    [1, client_reason_inactive, clientId]
+  );
+  res.status(200).send({ message: "Client and associated pets deactivated!" });
+};
+
+// query to reactivate a client by their ID
+exports.reactivateClientById = async (req, res) => {
+  const clientId = parseInt(req.params.id);
+
+  const response = await db.query(
+    `UPDATE patient
+    SET 
+      patient_inactive = $1,
+      patient_reason_inactive = $2
+    WHERE patient_client_id = $3 
+    AND patient_reason_inactive = (
+      SELECT client_reason_inactive 
+      FROM client
+      WHERE client_id = $4
+    )`,
+    [0, null, clientId, clientId]
+  );
+
+  const response2 = await db.query(
+    `UPDATE client 
+    SET 
+      client_inactive = $1,
+      client_reason_inactive = $2
+    WHERE client_id = $3`,
+    [0, null, clientId]
+  );
+
+  res.status(200).send({ message: "Client and associated pets reactivated!" });
+};
+
 exports.deleteClientById = async (req, res) => {
   const clientId = parseInt(req.params.id);
   await db.query('DELETE FROM client WHERE client_id = $1', 

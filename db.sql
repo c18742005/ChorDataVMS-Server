@@ -56,9 +56,9 @@ CREATE TABLE patient(
     patient_sex VARCHAR(3) NOT NULL,
     patient_color VARCHAR(255) NOT NULL,
     patient_microchip VARCHAR(16) NOT NULL,
-    patient_client_id INTEGER NOT NULL,
     patient_inactive BOOLEAN,
     patient_reason_inactive VARCHAR(255),
+    patient_client_id INTEGER NOT NULL,
     CONSTRAINT fk_client_patient
         FOREIGN KEY (patient_client_id)
             REFERENCES client(client_id)

@@ -16,6 +16,12 @@ router.get('/patients/client/:id', patientController.findPatientByClientId);
 // Route to update a patient by their ID 
 router.put('/patients/:id', patientController.updatePatientById);
 
+// Route to deactivate a patient by their ID 
+router.put('/patients/deactivate/:id', patientController.deactivatePatientById);
+
+// Route to reactivate a patient by their ID
+router.put('/patients/reactivate/:id', patientController.reactivatePatientById);
+
 // Route to delete a patient by their ID
 router.delete('/patients/:id', patientController.deletePatientById);
 

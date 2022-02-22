@@ -110,6 +110,37 @@ exports.updatePatientById = async (req, res) => {
   res.status(200).send({ message: "Patient Updated Successfully!" });
 };
 
+// query to deactivate a patient by their ID
+exports.deactivatePatientById = async (req, res) => {
+  const patientId = parseInt(req.params.id);
+  const { patient_reason_inactive } = req.body;
+
+  const response = await db.query(
+    `UPDATE patient
+    SET 
+      patient_inactive = $1,
+      patient_reason_inactive = $2
+    WHERE patient_id = $3`,
+    [1, patient_reason_inactive, patientId]
+  );
+  res.status(200).send({ message: "Patient Deactivated!" });
+};
+
+// query to deactivate a patient by their ID
+exports.reactivatePatientById = async (req, res) => {
+  const patientId = parseInt(req.params.id);
+
+  const response = await db.query(
+    `UPDATE patient
+    SET 
+      patient_inactive = $1,
+      patient_reason_inactive = $2
+    WHERE patient_id = $3`,
+    [0, null, patientId]
+  );
+  res.status(200).send({ message: "Patient Reactivated!" });
+};
+
 exports.deletePatientById = async (req, res) => {
   const patientId = parseInt(req.params.id);
   await db.query('DELETE FROM patient WHERE patient_id = $1', 
