@@ -1,0 +1,22 @@
+const router = require('express-promise-router')();
+const patientController = require('../controllers/patient.controller');
+
+// Route to create a patient
+router.post('/patients', patientController.createPatient);
+
+// Route to get all patients
+router.get('/patients', patientController.listAllPatients);
+
+// Route to get a patient by patientID 
+router.get('/patients/:id', patientController.findPatientById);
+
+// Route to get a patient by clientID 
+router.get('/patients/client/:id', patientController.findPatientByClientId);
+
+// Route to update a patient by their ID 
+router.put('/patients/:id', patientController.updatePatientById);
+
+// Route to delete a patient by their ID
+router.delete('/patients/:id', patientController.deletePatientById);
+
+module.exports = router;
