@@ -1,8 +1,9 @@
 const router = require('express-promise-router')();
 const clientController = require('../controllers/client.controller');
+const clientValidator = require("../middleware/clientValidator");
 
 // Route to create a client 
-router.post('/clients', clientController.createClient);
+router.post('/clients', clientValidator.validate('createClient'), clientController.createClient); 
 
 // Route to get all clients
 router.get('/clients', clientController.listAllClients);

@@ -1,7 +1,15 @@
 const db = require("../config/database");
-
+const { validationResult } = require('express-validator')
+ 
 // query to add a client
 exports.createClient = async (req, res) => {
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+
   const { 
     client_forename, 
     client_surname, 
@@ -11,7 +19,8 @@ exports.createClient = async (req, res) => {
     client_phone,
     client_email,
     client_clinic_id  } = req.body;
-  const { rows } = await db.query(
+
+  const rows = await db.query(
     `INSERT INTO client(
       client_forename, 
       client_surname, 
