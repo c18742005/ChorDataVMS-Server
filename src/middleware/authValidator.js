@@ -28,8 +28,8 @@ exports.validate = (method) => {
         ).isStrongPassword().trim().escape(),
         body(
           'role', 
-          'Role must be one of: vet, vetnurse, aca, receptionist')
-            .isIn(["vet", "vetnurse", "aca", "receptionist"]).trim().escape(),
+          'Role must be one of: Vet, Nurse, ACA, Receptionist')
+            .isIn(["Vet", "Nurse", "ACA", "Receptionist"]).trim().escape(),
         body(
           'clinic_id', 
           'Clinic ID must be made up of numeric characters and not contain +, -, or .')

@@ -2,6 +2,7 @@ const db = require("../config/database");
 
 // query to add a patient
 exports.createPatient = async (req, res) => {
+  let body = {};
   const { 
     patient_name,
     patient_age,
@@ -11,7 +12,8 @@ exports.createPatient = async (req, res) => {
     patient_color,
     patient_microchip,
     patient_client_id } = req.body;
-  const { rows } = await db.query(
+
+  const rows = await db.query(
     `INSERT INTO patient(
       patient_name,
       patient_age,
@@ -20,8 +22,10 @@ exports.createPatient = async (req, res) => {
       patient_sex,
       patient_color,
       patient_microchip,
+      patient_inactive,
       patient_client_id ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    RETURNING *`,
     [
       patient_name,
       patient_age,
@@ -30,24 +34,14 @@ exports.createPatient = async (req, res) => {
       patient_sex,
       patient_color,
       patient_microchip,
+      0,
       patient_client_id
     ]
-  );
+  ).then(res => body = res.rows[0])
 
   res.status(201).send({
     message: "Patient added successfully!",
-    body: {
-      patient: { 
-        patient_name,
-        patient_age,
-        patient_species,
-        patient_breed,
-        patient_sex,
-        patient_color,
-        patient_microchip,
-        patient_client_id 
-      }
-    },
+    body
   });
 };
 

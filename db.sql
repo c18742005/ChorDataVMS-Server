@@ -38,7 +38,7 @@ CREATE TABLE client(
     client_county VARCHAR(255) NOT NULL,
     client_phone VARCHAR(255) NOT NULL,
     client_email VARCHAR(255) NOT NULL,
-    client_inactive BOOLEAN,
+    client_inactive BOOLEAN NOT NULL,
     client_reason_inactive VARCHAR(255),
     client_clinic_id INTEGER NOT NULL,
     CONSTRAINT fk_clinic_client
@@ -55,8 +55,8 @@ CREATE TABLE patient(
     patient_breed VARCHAR(255) NOT NULL,
     patient_sex VARCHAR(3) NOT NULL,
     patient_color VARCHAR(255) NOT NULL,
-    patient_microchip VARCHAR(16) NOT NULL,
-    patient_inactive BOOLEAN,
+    patient_microchip VARCHAR(255) NOT NULL,
+    patient_inactive BOOLEAN NOT NULL,
     patient_reason_inactive VARCHAR(255),
     patient_client_id INTEGER NOT NULL,
     CONSTRAINT fk_client_patient

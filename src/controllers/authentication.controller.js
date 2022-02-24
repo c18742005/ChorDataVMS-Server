@@ -30,7 +30,7 @@ exports.registerStaffMember = async (req, res) => {
 
     // throw error as username is taken
     if(staff_member.rows.length !== 0) {
-      return res.status(422).json("Username already taken");
+      return res.status(401).json("Username already taken");
     }
 
     // Check clinic exists. If not throw error
@@ -40,7 +40,7 @@ exports.registerStaffMember = async (req, res) => {
     );
 
     if(clinic.rows.length === 0) {
-      return res.status(422).json("Clinic does not exist");
+      return res.status(401).json("Clinic does not exist");
     }
 
     // Bcrypt their password

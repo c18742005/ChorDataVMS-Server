@@ -10,6 +10,7 @@ exports.createClient = async (req, res) => {
     return;
   }
 
+  let body = {};
   const { 
     client_forename, 
     client_surname, 
@@ -20,7 +21,7 @@ exports.createClient = async (req, res) => {
     client_email,
     client_clinic_id  } = req.body;
 
-  const rows = await db.query(
+  await db.query(
     `INSERT INTO client(
       client_forename, 
       client_surname, 
@@ -29,8 +30,10 @@ exports.createClient = async (req, res) => {
       client_county, 
       client_phone, 
       client_email, 
+      client_inactive,
       client_clinic_id ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    RETURNING *`,
     [
       client_forename, 
       client_surname, 
@@ -39,21 +42,13 @@ exports.createClient = async (req, res) => {
       client_county, 
       client_phone, 
       client_email, 
+      0,
       client_clinic_id]
-  );
+  ).then(res => body = res.rows[0])
 
   res.status(201).send({
     message: "Client added successfully!",
-    body: {
-      client: { client_forename, 
-        client_surname, 
-        client_address, 
-        client_city, 
-        client_county, 
-        client_phone, 
-        client_email, 
-        client_clinic_id }
-    },
+    body
   });
 };
 
