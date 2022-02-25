@@ -22,7 +22,13 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use(cors());
+app.use(cors({
+  origin: origin, 
+  methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"],
+  headers: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 
 app.use(index);
 app.use('/api/', clientRoute);
