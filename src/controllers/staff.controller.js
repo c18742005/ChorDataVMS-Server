@@ -2,6 +2,7 @@ const db = require("../config/database");
 
 exports.loadStaffMember = async (req, res) => {
   try{
+    res.setHeader('Access-Control-Allow-Origin', '*');
     const staff_member = await db.query(
       `SELECT *
       FROM staff_member
