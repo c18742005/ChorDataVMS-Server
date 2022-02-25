@@ -13,7 +13,7 @@ const authenticationRoute = require('./routes/authentication.routes');
 const origin = `${process.env.CORS_URL}`
 
 app.use(cors({
-  origin: true, 
+  origin: "*", 
   methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"],
   credentials: true,
 }));
