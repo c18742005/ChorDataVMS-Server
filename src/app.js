@@ -17,7 +17,7 @@ app.use(express.json({ type: 'application/vnd.api+json' }));
 const origin = `${process.env.CORS_URL}`
 
 app.use(cors({
-  origin: origin, 
+  origin: *, 
   methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"],
   headers: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
   credentials: true,
