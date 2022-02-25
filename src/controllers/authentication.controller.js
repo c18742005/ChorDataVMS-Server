@@ -55,7 +55,7 @@ exports.registerStaffMember = async (req, res) => {
     );
 
     // Generate a jwt token
-    const token = jwtGenerator(newStaff.rows[0].staff_member_id);
+    const token = jwtGenerator(newStaff.rows[0]);
     const staff_info = newStaff.rows[0];
 
     res.json({ token, staff_info });
@@ -97,7 +97,7 @@ exports.loginStaffMember = async (req, res) => {
     }
 
     // Give them JWT token
-    const token = jwtGenerator(staff_member.rows[0].staff_member_id);
+    const token = jwtGenerator(staff_member.rows[0]);
     const staff_info = staff_member.rows[0];
 
     res.json({ token, staff_info });

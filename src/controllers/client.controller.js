@@ -66,8 +66,23 @@ exports.findClientById = async (req, res) => {
   res.status(200).send(response.rows);
 };
 
+// query to get a clients by their clinic ID
+exports.findClientByClinicId = async (req, res) => {
+  const clinic_id = parseInt(req.params.id);
+  const response = await db.query('SELECT * FROM client WHERE client_clinic_id = $1',
+    [clinic_id]);
+  res.status(200).send(response.rows);
+};
+
 // query to update a client by their ID
 exports.updateClientById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+
   const clientId = parseInt(req.params.id);
   const { 
     client_forename, 

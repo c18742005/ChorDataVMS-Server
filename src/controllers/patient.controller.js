@@ -1,7 +1,15 @@
 const db = require("../config/database");
+const { validationResult } = require('express-validator')
 
 // query to add a patient
 exports.createPatient = async (req, res) => {
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+
   let body = {};
   const { 
     patient_name,
@@ -69,6 +77,13 @@ exports.findPatientByClientId = async (req, res) => {
 
 // query to update a patient by their ID
 exports.updatePatientById = async (req, res) => {
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+  
   const patientId = parseInt(req.params.id);
   const { 
     patient_name,

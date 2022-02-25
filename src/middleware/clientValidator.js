@@ -2,32 +2,32 @@ const { body } = require('express-validator')
 
 exports.validate = (method) => {
   switch (method) {
-    case 'createClient': {
+    case 'validateClientForm': {
       return [ 
         body(
           'client_forename', 
           'Forename can only consist of alphabetic characters')
-          .exists().isAlpha().trim().escape(),
+          .exists().isAlpha("en-GB", {ignore: " -"}).trim().escape(),
         body(
           'client_surname', 
           'Surname can only consist of alphabetic characters')
-          .exists().isAlpha().trim().escape(),
+          .exists().isAlpha("en-GB", {ignore: " -"}).trim().escape(),
         body(
           'client_address', 
-          'Address cannot be empty')
-          .exists().trim().escape(),
+          'Address cannot be empty and must be alphanumeric')
+          .exists().isAlphanumeric("en-GB", {ignore: " -"}).trim().escape(),
         body(
           'client_city', 
-          'City cannot be empty')
-          .exists().trim().escape(),
+          'City cannot be empty and must be alphabetic')
+          .exists().isAlpha("en-GB", {ignore: " -"}).trim().escape(),
         body(
           'client_county', 
           'County cannot be empty and must only use alphanumeric characters')
-          .exists().trim().escape(),
+          .exists().isAlpha("en-GB", {ignore: " -"}).trim().escape(),
         body(
           'client_phone', 
-          'Phone cannot be empty and must only use numeric characters')
-          .exists().isNumeric().trim().escape(),
+          'Phone must be a valid phone number and must only use numeric characters (No spaces)')
+          .exists().isMobilePhone().trim().escape(),
         body(
           'client_email', 
           'Email is invalid')
