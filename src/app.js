@@ -19,7 +19,7 @@ const origin = `${process.env.CORS_URL}`
 app.use(cors({
   origin: true, 
   methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"],
-  headers: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200
 }));
