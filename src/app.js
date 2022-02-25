@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const dotenv = require('dotenv').config()
 
 const index = require('./routes/index');
 const clientRoute = require('./routes/client.routes');
@@ -12,12 +13,12 @@ const authenticationRoute = require('./routes/authentication.routes');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.json({ type: 'application/vnd.api+json' }));
-app.use(cors());
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
+const origin = `${process.env.CORS_URL}`
+app.use(cors({
+  origin: origin,
+  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+}));
 
 app.use(index);
 app.use('/api/', clientRoute);
