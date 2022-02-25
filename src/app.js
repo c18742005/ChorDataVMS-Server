@@ -10,19 +10,18 @@ const sidebarRoute = require('./routes/sidebar.routes');
 const staffRoute = require('./routes/staff.routes');
 const authenticationRoute = require('./routes/authentication.routes');
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.json({ type: 'application/vnd.api+json' }));
-
 const origin = `${process.env.CORS_URL}`
 
 app.use(cors({
   origin: true, 
   methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200
 }));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.json({ type: 'application/vnd.api+json' }));
 
 app.use(index);
 app.use('/api/', clientRoute);
