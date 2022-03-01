@@ -75,22 +75,22 @@ CREATE TABLE drug(
 );
 
 INSERT INTO drug(drug_name, drug_link) 
-VALUES ('Methadone', 'https://www.hpra.ie/homepage/medicines/medicines-information/find-a-medicine/results/item?pano=PA0409/019/001&t=METHADONE');
+VALUES ('Methadone', 'https://rb.gy/6jbtqh');
 
 INSERT INTO drug(drug_name, drug_link) 
-VALUES ('Pentobarbital', 'https://www.hpra.ie/homepage/veterinary/veterinary-medicines-information/find-a-medicine/item?pano=VPA10987/115/001&t=Euthoxin%20500%20mg/ml%20solution%20for%20injection.');
+VALUES ('Pentobarbital', 'https://rb.gy/ragqx5');
 
 INSERT INTO drug(drug_name, drug_link) 
-VALUES ('Fentanyl', 'https://www.hpra.ie/homepage/medicines/medicines-information/find-a-medicine/results/item?pano=PA0405/061/001&t=MYLAFENT');
+VALUES ('Fentanyl', 'https://rb.gy/tc6kdc');
 
 INSERT INTO drug(drug_name, drug_link) 
-VALUES ('Ketamine', 'Injectable', 'https://www.hpra.ie/homepage/site-tools/search?query=ketamine');
+VALUES ('Ketamine', 'https://rb.gy/yrzynx');
 
 INSERT INTO drug(drug_name, drug_link) 
-VALUES ('Morphine', 'https://www.hpra.ie/homepage/site-tools/search?query=morphine');
+VALUES ('Morphine', 'https://rb.gy/9y5ijt');
 
 INSERT INTO drug(drug_name, drug_link) 
-VALUES ('Pethidine', 'https://www.hpra.ie/homepage/medicines/medicines-information/find-a-medicine/results/item?pano=PA0255/024/001%20%20&t=PETHIDINE');
+VALUES ('Pethidine', 'https://rb.gy/ctcd2g');
 
 
 CREATE TABLE drug_stock(
