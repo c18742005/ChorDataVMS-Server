@@ -198,3 +198,21 @@ exports.deletePatientById = async (req, res) => {
     res.status(500).json("Server error");
   } 
 };
+
+// query to get all patients by a clinic ID
+exports.findPatientByClinicId = async (req, res) => {
+  try{
+    const clinic_id = parseInt(req.params.id);
+    const response = await db.query(
+      `SELECT * FROM patient 
+      WHERE patient_client_id IN (
+        SELECT client_id FROM client
+        WHERE client_clinic_id = $1
+      )`,
+      [clinic_id]);
+    res.status(200).send(response.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server error");
+  }
+};

@@ -9,13 +9,15 @@ const patientRoute = require('./routes/patient.routes');
 const sidebarRoute = require('./routes/sidebar.routes');
 const staffRoute = require('./routes/staff.routes');
 const authenticationRoute = require('./routes/authentication.routes');
+const drugRoute = require('./routes/drug.routes');
 
 const origin = `${process.env.CORS_URL}`
 
 app.use(cors({
   origin: origin, 
-  methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"],
+  methods: ["GET", "HEAD", "PUT", "POST", "DELETE", "OPTIONS", "PATCH"],
   credentials: true,
+  optionsSuccessStatus: 204
 }));
 
 app.use(express.urlencoded({ extended: true }));
@@ -28,5 +30,6 @@ app.use('/api/', patientRoute);
 app.use('/api/', sidebarRoute);
 app.use('/api/', staffRoute);
 app.use('/api/', authenticationRoute);
+app.use('/api/', drugRoute);
 
 module.exports = app;

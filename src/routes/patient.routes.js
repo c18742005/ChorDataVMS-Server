@@ -18,6 +18,9 @@ router.get('/patients/:id', patientController.findPatientById);
 // Route to get a patient by clientID 
 router.get('/patients/client/:id', patientController.findPatientByClientId);
 
+// Route to get a patient by clinicID 
+router.get('/patients/clinic/:id', patientController.findPatientByClinicId);
+
 // Route to update a patient by their ID 
 router.put(
   '/patients/:id', 

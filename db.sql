@@ -1,5 +1,8 @@
 CREATE DATABASE chordata;
 
+DROP TABLE IF EXISTS drug_log;
+DROP TABLE IF EXISTS drug_stock;
+DROP TABLE IF EXISTS drug;
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS staff_member;
 DROP TABLE IF EXISTS client;
@@ -62,5 +65,70 @@ CREATE TABLE patient(
     CONSTRAINT fk_client_patient
         FOREIGN KEY (patient_client_id)
             REFERENCES client(client_id)
+            ON DELETE CASCADE
+);
+
+CREATE TABLE drug(
+    drug_id SERIAL PRIMARY KEY,
+    drug_name VARCHAR(255) NOT NULL,
+    drug_link VARCHAR(255) NOT NULL
+);
+
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Methadone', 'https://www.hpra.ie/homepage/medicines/medicines-information/find-a-medicine/results/item?pano=PA0409/019/001&t=METHADONE');
+
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Pentobarbital', 'https://www.hpra.ie/homepage/veterinary/veterinary-medicines-information/find-a-medicine/item?pano=VPA10987/115/001&t=Euthoxin%20500%20mg/ml%20solution%20for%20injection.');
+
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Fentanyl', 'https://www.hpra.ie/homepage/medicines/medicines-information/find-a-medicine/results/item?pano=PA0405/061/001&t=MYLAFENT');
+
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Ketamine', 'Injectable', 'https://www.hpra.ie/homepage/site-tools/search?query=ketamine');
+
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Morphine', 'https://www.hpra.ie/homepage/site-tools/search?query=morphine');
+
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Pethidine', 'https://www.hpra.ie/homepage/medicines/medicines-information/find-a-medicine/results/item?pano=PA0255/024/001%20%20&t=PETHIDINE');
+
+
+CREATE TABLE drug_stock(
+    drug_batch_id VARCHAR(255) PRIMARY KEY,
+    drug_expiry_date DATE NOT NULL,
+    drug_open_date DATE,
+    drug_end_date DATE,
+    drug_quantity VARCHAR(255) NOT NULL,
+    drug_concentration VARCHAR(255) NOT NULL,
+    drug_stock_drug_id INTEGER NOT NULL,
+    drug_stock_clinic_id INTEGER NOT NULL,
+    CONSTRAINT fk_drug_drug_stock
+        FOREIGN KEY (drug_stock_drug_id)
+            REFERENCES drug(drug_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_drug_clinic_id
+        FOREIGN KEY (drug_stock_clinic_id)
+            REFERENCES clinic(clinic_id)
+            ON DELETE CASCADE
+);
+
+CREATE TABLE drug_log(
+    drug_log_id SERIAL PRIMARY KEY,
+    drug_quantity_given VARCHAR(255) NOT NULL,
+    drug_date_administered DATE NOT NULL,
+    drug_log_drug_stock_id VARCHAR(255) NOT NULL,
+    drug_patient_id INTEGER NOT NULL,
+    drug_staff_id INTEGER NOT NULL,
+    CONSTRAINT fk_drug_log_drug_stock
+        FOREIGN KEY (drug_log_drug_stock_id)
+            REFERENCES drug_stock(drug_batch_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_drug_log_patient
+        FOREIGN KEY (drug_patient_id)
+            REFERENCES patient(patient_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_drug_log_staff
+        FOREIGN KEY (drug_staff_id)
+            REFERENCES staff_member(staff_member_id)
             ON DELETE CASCADE
 );
