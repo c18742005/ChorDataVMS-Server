@@ -1,3 +1,6 @@
+/*
+    JavaScript file that validates login and register forms
+*/
 const { body } = require('express-validator')
 
 exports.validate = (method) => {
@@ -7,7 +10,7 @@ exports.validate = (method) => {
         body(
           'username', 
           'Username must have a value'
-        ).exists().isLength({min:5, max: 254}).trim().escape(),
+        ).exists().isAlpha("en-GB").isLength({min:5, max: 254}).trim().escape(),
         body(
           'password', 
           'Password is too weak. Password should contain at least: ' +
@@ -23,7 +26,7 @@ exports.validate = (method) => {
         body(
           'username', 
           'Username must have a value'
-        ).exists().isLength({min:5, max: 254}).trim().escape(),
+        ).exists().isAlpha("en-GB").isLength({min:5, max: 254}).trim().escape(),
         body(
           'password', 
           'Password is too weak. Password should contain at least: ' +

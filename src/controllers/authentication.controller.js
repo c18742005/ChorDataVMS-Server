@@ -9,16 +9,31 @@ const bcrypt = require("bcryptjs");
 const jwtGenerator = require("../utils/jwtGenerator");
 const { validationResult } = require('express-validator')
 
-// Register staff member
+/*
+  Register a staff member with the system
+  Request body:
+    - (String) username: new staff username for the user
+    - (String) password: users new password
+    - (String) role - The job role they have
+    - (Number) clinic_id - The clinic they are being added to
+
+  Returns: 
+    422: Parameters do not pass validation
+    409: username is already taken
+    404: clinic does not exist
+    500: Error on the server side
+    201: JSON object with token and user details
+*/
 exports.registerStaffMember = async (req, res) => {
   const errors = validationResult(req);
 
+  // If errors exist during validation pass them to the user
   if(!errors.isEmpty()) {
     res.status(422).json({ errors: errors.array() });
     return;
   }
 
-  // Destructure the request.body (name, email, password)
+  // Destructure the request.body
   const { username, password, role, clinic_id } = req.body;
   
   try {
@@ -28,29 +43,32 @@ exports.registerStaffMember = async (req, res) => {
       [username]
     );
 
-    // throw error as username is taken
+    // Send error res as username is taken
     if(staff_member.rows.length !== 0) {
-      return res.status(401).json("Username already taken");
+      return res.status(409).json("Username already taken");
     }
 
-    // Check clinic exists. If not throw error
+    // Check clinic exists
     const clinic = await db.query(
       "SELECT * FROM clinic WHERE clinic_id = $1", 
       [clinic_id]
     );
 
+    // Send error as clinic does not exist
     if(clinic.rows.length === 0) {
-      return res.status(401).json("Clinic does not exist");
+      return res.status(404).json("Clinic does not exist");
     }
 
-    // Bcrypt their password
+    // Hash user password
     const saltRound = 10;
     const salt = await bcrypt.genSalt(saltRound);
     const bcryptPassword = await bcrypt.hash(password, salt);
 
     // Enter staff_member into database
     const newStaff = await db.query(
-      "INSERT INTO staff_member (staff_username, staff_password, staff_role, staff_clinic_id) VALUES ($1, $2, $3, $4) RETURNING *", 
+      `INSERT INTO staff_member (staff_username, staff_password, staff_role, staff_clinic_id) 
+      VALUES ($1, $2, $3, $4) 
+      RETURNING *`, 
       [username, bcryptPassword, role, clinic_id]
     );
 
@@ -58,7 +76,7 @@ exports.registerStaffMember = async (req, res) => {
     const token = jwtGenerator(newStaff.rows[0]);
     const staff_info = newStaff.rows[0];
 
-    res.json({ token, staff_info });
+    res.status(201).json({ token, staff_info });
 
   } catch (err) {
     console.error(err.message);
@@ -66,52 +84,67 @@ exports.registerStaffMember = async (req, res) => {
   }
 }
 
-// Login staff member
+/*
+  Login a staff member
+  Request body:
+    - (String) username: staff username for the user
+    - (String) password: users password
+
+  Returns: 
+    422: Parameters do not pass validation
+    401: username/password combo does not exist
+    500: Error on the server side
+    200: JSON object with token and user details
+*/
 exports.loginStaffMember = async (req, res) => { 
   try {
     const errors = validationResult(req);
 
+    // Send error if params don't pass validation
     if(!errors.isEmpty()) {
       res.status(422).json({ errors: errors.array() });
       return;
     }
 
-    // Destructure the request.body (username, password)
+    // Destructure the request.body
     const { username, password } = req.body;
 
-    // Check staff member exists. If not throw error
+    // Check staff member exists
     const staff_member = await db.query(
       "SELECT * FROM staff_member WHERE staff_username = $1", 
       [username]
     );
 
-    if(staff_member.rows.length === 0) {
-      return res.status(401).json("User does not exist");
-    }
-
     // Check if incoming password matches DB password
     const validPassword = await bcrypt.compare(password, staff_member.rows[0].staff_password);
 
-    if(!validPassword) {
-      return res.status(401).json("Password is incorrect");
+    // Return 401 error as username or password is incorrect
+    if(!validPassword || staff_member.rows.length === 0) {
+      return res.status(401).json("Username/Password is incorrect");
     }
 
-    // Give them JWT token
+    // Give user JWT token
     const token = jwtGenerator(staff_member.rows[0]);
     const staff_info = staff_member.rows[0];
 
-    res.json({ token, staff_info });
-    
+    res.status(200).json({ token, staff_info });
+
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
   }
 }
 
-// Verify staff member
+/*
+  Verify a staff member
+
+  Returns: 
+    200: Verified is true
+    500: Error on the server side
+*/
 exports.verifyStaffMember = async (req, res) => {
   try {
-    res.json(true);
+    res.status(200).json(true);
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");

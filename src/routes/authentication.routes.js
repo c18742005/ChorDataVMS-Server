@@ -9,21 +9,21 @@ const authenticationController = require('../controllers/authentication.controll
 const authorisation = require("../middleware/authorisation");
 const validateForm = require("../middleware/authValidator");
 
-// Register staff member API
+// Register staff member 
 router.post(
     '/register', 
     validateForm.validate('registerStaffMember'), 
     authenticationController.registerStaffMember
 );
 
-// Log in 
+// Log in staff member
 router.post(
     '/login', 
     validateForm.validate('loginStaffMember'), 
     authenticationController.loginStaffMember
 );
 
-// CHeck member verified
+// Check member is verified
 router.get('/verify', authorisation, authenticationController.verifyStaffMember);
 
 module.exports = router;  

@@ -1,3 +1,6 @@
+/*
+    JavaScript file that validates patient forms
+*/
 const { body } = require('express-validator')
 
 exports.validate = (method) => {
@@ -30,7 +33,7 @@ exports.validate = (method) => {
           .exists().isAlpha("en-GB", {ignore: " -"}).isLength({min:1, max: 254}).trim().escape(),
         body(
           'patient_microchip', 
-          'Microchip must be 15 characters longs and must be numeric')
+          'Microchip must be 15 characters long and must be numeric')
           .exists().isLength({min:15, max: 15}).isNumeric().trim().escape()
       ]   
     }

@@ -8,12 +8,12 @@ module.exports = (req, res, next) => {
     // Get token from header
     const token = req.header("token");
 
-    // Check if not token
+    // If there is not token then send an error
     if(!token) {
-        return res.status(403).json("Unauthorised");
+        return res.status(403).json("Unauthorised: JWT token not found");
     }
 
-    // Verify token
+    // Verify the JWT token
     try {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         req.staff_member = payload.staff_member;

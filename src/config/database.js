@@ -1,3 +1,6 @@
+/* 
+  Database configuration file
+*/
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
 

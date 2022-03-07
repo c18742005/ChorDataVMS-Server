@@ -1,3 +1,6 @@
+/*
+    JavaScript file that validates drug forms
+*/
 const { body } = require('express-validator')
 
 exports.validate = (method) => {
@@ -14,8 +17,8 @@ exports.validate = (method) => {
           .exists().isNumeric().isLength({min:1, max: 254}).trim().escape(),
         body(
           'drug_quantity', 
-          'Drug quantity must be alphanumeric and cannot be empty')
-          .exists().isAlphanumeric("en-GB", {ignore: " -/"}).isLength({min:1, max: 254}).trim(),
+          'Drug quantity must be numeric and cannot be empty')
+          .exists().isNumeric().isLength({min:1, max: 254}).trim(),
         body(
           'drug_concentration', 
           'Drug concentration must be alphanumeric and cannot be empty')
@@ -35,7 +38,7 @@ exports.validate = (method) => {
         body(
           'drug_quantity_given', 
           'Drug quantity must be alphanumeric and cannot be empty')
-          .exists().isAlphanumeric("en-GB", {ignore: " -/"}).isLength({min:1, max: 254}).trim()
+          .exists().isNumeric().isLength({min:1, max: 254}).trim()
       ]   
     }
   }

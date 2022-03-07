@@ -1,5 +1,6 @@
 CREATE DATABASE chordata;
 
+DROP TABLE IF EXISTS xray;
 DROP TABLE IF EXISTS drug_log;
 DROP TABLE IF EXISTS drug_stock;
 DROP TABLE IF EXISTS drug;
@@ -96,9 +97,9 @@ VALUES ('Pethidine', 'https://rb.gy/ctcd2g');
 CREATE TABLE drug_stock(
     drug_batch_id VARCHAR(255) PRIMARY KEY,
     drug_expiry_date DATE NOT NULL,
-    drug_open_date DATE,
-    drug_end_date DATE,
-    drug_quantity VARCHAR(255) NOT NULL,
+    drug_quantity NUMERIC(6, 2) NOT NULL,
+    drug_quantity_measure VARCHAR(255) NOT NULL,
+    drug_quantity_remaining NUMERIC(6, 2) NOT NULL,
     drug_concentration VARCHAR(255) NOT NULL,
     drug_stock_drug_id INTEGER NOT NULL,
     drug_stock_clinic_id INTEGER NOT NULL,
@@ -130,5 +131,29 @@ CREATE TABLE drug_log(
     CONSTRAINT fk_drug_log_staff
         FOREIGN KEY (drug_staff_id)
             REFERENCES staff_member(staff_member_id)
+            ON DELETE CASCADE
+);
+
+CREATE TABLE xray(
+    xray_id SERIAL PRIMARY KEY,
+    xray_date DATE NOT NULL,
+    xray_image_quality VARCHAR(8) NOT NULL,
+    xray_kV NUMERIC(6, 2) NOT NULL,
+    xray_mAs  NUMERIC(6, 2) NOT NULL,
+    xray_position VARCHAR(255) NOT NULL,
+    xray_patient_id INTEGER NOT NULL,
+    xray_staff_id INTEGER NOT NULL,
+    xray_clinic_id INTEGER NOT NULL,
+    CONSTRAINT fk_xray_patient
+        FOREIGN KEY (xray_patient_id)
+            REFERENCES patient(patient_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_xray_staff
+        FOREIGN KEY (xray_staff_id)
+            REFERENCES staff_member(staff_member_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_xray_clinic
+        FOREIGN KEY (xray_clinic_id)¸
+            REFERENCES clinic(clinic_id)
             ON DELETE CASCADE
 );

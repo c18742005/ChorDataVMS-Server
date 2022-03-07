@@ -1,3 +1,6 @@
+/*
+    JavaScript file that validates client forms
+*/
 const { body } = require('express-validator')
 
 exports.validate = (method) => {
