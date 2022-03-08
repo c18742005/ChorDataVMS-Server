@@ -31,7 +31,6 @@ exports.createClient = async (req, res) => {
     return;
   }
 
-  let body = {}; // Initially empty 
   try{
     // Destructure request body
     const { 
@@ -45,7 +44,6 @@ exports.createClient = async (req, res) => {
       client_clinic_id  } = req.body;
   
     // Insert client into DB 
-    // Add client details to response
     await db.query(
       `INSERT INTO client(
         client_forename, 

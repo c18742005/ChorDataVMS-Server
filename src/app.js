@@ -10,6 +10,7 @@ const sidebarRoute = require('./routes/sidebar.routes');
 const staffRoute = require('./routes/staff.routes');
 const authenticationRoute = require('./routes/authentication.routes');
 const drugRoute = require('./routes/drug.routes');
+const xrayRoute = require('./routes/xray.routes');
 
 const origin = `${process.env.CORS_URL}`
 
@@ -31,5 +32,6 @@ app.use('/api/', sidebarRoute);
 app.use('/api/', staffRoute);
 app.use('/api/', authenticationRoute);
 app.use('/api/', drugRoute);
+app.use('/api/', xrayRoute);
 
 module.exports = app;

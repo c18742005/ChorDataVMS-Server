@@ -137,9 +137,9 @@ CREATE TABLE drug_log(
 CREATE TABLE xray(
     xray_id SERIAL PRIMARY KEY,
     xray_date DATE NOT NULL,
-    xray_image_quality VARCHAR(8) NOT NULL,
-    xray_kV NUMERIC(6, 2) NOT NULL,
-    xray_mAs  NUMERIC(6, 2) NOT NULL,
+    xray_image_quality VARCHAR(16) NOT NULL,
+    xray_kV NUMERIC(4, 2) NOT NULL,
+    xray_mAs  NUMERIC(4, 2) NOT NULL,
     xray_position VARCHAR(255) NOT NULL,
     xray_patient_id INTEGER NOT NULL,
     xray_staff_id INTEGER NOT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE xray(
             REFERENCES staff_member(staff_member_id)
             ON DELETE CASCADE,
     CONSTRAINT fk_xray_clinic
-        FOREIGN KEY (xray_clinic_id)¸
+        FOREIGN KEY (xray_clinic_id)
             REFERENCES clinic(clinic_id)
             ON DELETE CASCADE
 );
