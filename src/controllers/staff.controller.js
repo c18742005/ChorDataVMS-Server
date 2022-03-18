@@ -18,7 +18,7 @@ exports.loadStaffMember = async (req, res) => {
 
     // Retrieve staff member from DB
     const staff_member = await db.query(
-      `SELECT *
+      `SELECT staff_member_id, staff_username, staff_role, staff_clinic_id
       FROM staff_member
       WHERE staff_member_id = $1`,
       [staff_id]

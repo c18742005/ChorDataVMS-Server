@@ -95,6 +95,53 @@ exports.findPatientByClinicId = async (req, res) => {
 };
 
 /*
+  GET: /patients/species/:species/clinic/:clinic_id
+    Retrieve all patients of a particular species treated in a clinic by the clinic ID
+  Request params:
+    - (Number) clinic_id: ID of the clinic the patients belong to
+    - (String) species: The species they wish to retrieve
+
+  Returns: 
+    200: JSON patients data
+    404: Clinic does not exist
+    500: Error on the server side
+*/
+exports.findSpeciesByClinicId = async (req, res) => {
+  try{
+    const clinic_id = parseInt(req.params.id);
+    const species = req.params.species;
+
+    // Check if clinic exists
+    const clinic = await db.query(
+      "SELECT * FROM clinic WHERE clinic_id = $1", 
+      [clinic_id]
+    );
+
+    // Send error as clinic does not exist
+    if(clinic.rows.length === 0) {
+      return res.status(404).json("Clinic with this ID does not exist");
+    }
+
+    // Retrieve species records from DB
+    const response = await db.query(
+      `SELECT patient_id, patient_name, patient_microchip, patient_species
+      FROM patient 
+      WHERE patient_client_id IN (
+        SELECT client_id FROM client
+        WHERE client_clinic_id = $1
+      )
+      AND patient_species = $2`,
+      [clinic_id, species]
+    );
+
+    res.status(200).send(response.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server error");
+  }
+};
+
+/*
   POST: /patients Add patient to a clinic
   Request body:
     - (String) patient_name: Name of patient
@@ -118,7 +165,7 @@ exports.createPatient = async (req, res) => {
   if(!errors.isEmpty()) {
     res.status(422).json({ errors: errors.array() });
     return;
-  }
+  } 
 
   try {
     // Destructure patient req body
@@ -131,6 +178,17 @@ exports.createPatient = async (req, res) => {
       patient_color,
       patient_microchip,
       patient_client_id } = req.body;
+
+    // Check if microchip is already in DB
+    const patient = await db.query(
+      "SELECT patient_microchip FROM patient WHERE patient_microchip = $1", 
+      [patient_microchip]
+    );
+
+    // Send error res as microchip is taken
+    if(patient.rows.length !== 0) {
+      return res.status(409).json("Microchip already belongs to another patient!");
+    }
   
     // Insert patient into DB
     await db.query(
@@ -220,6 +278,19 @@ exports.updatePatientById = async (req, res) => {
     // Send error as patient does not exist
     if(patient.rows.length === 0) {
       return res.status(404).json("Patient with this ID does not exist");
+    }
+
+    // Check if microchip exists
+    const microchip = await db.query(
+      `SELECT patient_microchip FROM patient 
+      WHERE patient_microchip = $1
+      AND patient_id <> $2`, 
+      [patient_microchip, patientId]
+    );
+
+    // Send error as microchip is taken
+    if(microchip.rows.length > 0) {
+      return res.status(409).json("Microchip already belongs to another patient!");
     }
   
     // Update the patient stored in the DB

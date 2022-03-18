@@ -119,6 +119,23 @@ exports.addXray = async (req, res) => {
       xray_patient_id,
       xray_staff_id,
       xray_clinic_id } = req.body;
+
+    // Check if patient is deactivated
+    const patient = await db.query(
+      "SELECT patient_name, patient_inactive FROM patient WHERE patient_id = $1", 
+      [xray_patient_id]
+    );
+
+    // Send error as patient is inactive
+    if(patient.rows[0].patient_inactive === true) {
+      const patient_name = patient.rows[0].patient_name
+      return res.status(403).json(
+        `Patient (${patient_name}) is inactive. 
+        Please reactivate ${patient_name} before taking xray`
+      );
+    }
+
+    let id = 0;
   
     // Insert xray log into DB
     await db.query(
@@ -143,13 +160,33 @@ exports.addXray = async (req, res) => {
         xray_staff_id,
         xray_clinic_id
       ]
-    ).then(res => body = res.rows[0])
+    ).then(res => id = res.rows[0].xray_id)
         
     // Send success response 
-    res.status(201).send({
-      message: "X-ray added successfully!",
+    await db.query(
+      `SELECT 
+        x.xray_id,
+        x.xray_date, 
+        x.xray_image_quality, 
+        x.xray_kV,
+        x.xray_mAs,
+        x.xray_position,
+        x.xray_patient_id,
+        p.patient_name, 
+        sm.staff_username 
+      FROM xray x
+      INNER JOIN patient p ON 
+        x.xray_patient_id = p.patient_id
+      INNER JOIN staff_member sm ON 
+        x.xray_staff_id = sm.staff_member_id
+      WHERE xray_id = $1;`,
+      [id]
+    ).then(res => body = res.rows[0])
+
+    res.status(200).send({ 
+      message: "X-ray Added Successfully!",
       body
-    });
+     });
   } catch (err) {
     // Send error response
     console.error(err.message);
@@ -191,6 +228,21 @@ exports.updateXrayById = async (req, res) => {
       xray_patient_id,
       xray_staff_id } = req.body;
 
+    // Check if patient is deactivated
+    const patient = await db.query(
+      "SELECT patient_name, patient_inactive FROM patient WHERE patient_id = $1", 
+      [xray_patient_id]
+    );
+
+    // Send error as patient is inactive
+    if(patient.rows[0].patient_inactive === true) {
+      const patient_name = patient.rows[0].patient_name
+      return res.status(403).json(
+        `Patient (${patient_name}) is inactive. 
+        Please reactivate ${patient_name} before taking xray`
+      );
+    }
+    
     // Update the client DB record
     await db.query(
       `UPDATE xray
@@ -216,7 +268,7 @@ exports.updateXrayById = async (req, res) => {
       ]
     ).then(res => id = res.rows[0].xray_id);
 
-    const response = await db.query(
+    await db.query(
       `SELECT 
         x.xray_id,
         x.xray_date, 

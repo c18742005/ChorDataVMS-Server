@@ -14,9 +14,10 @@ exports.validate = (method) => {
         body(
           'password', 
           'Password is too weak. Password should contain at least: ' +
-          '1 Lowercase letter, ' +
-          '1 Uppercase letter, ' +
-          '1 Number, and ' +
+          '8 characters\n' +
+          '1 Lowercase letter, \n' +
+          '1 Uppercase letter, \n' +
+          '1 Number, and \n' +
           '1 Symbol'
         ).isStrongPassword().isLength({min:8, max: 254}).trim().escape()
       ]   
@@ -30,9 +31,10 @@ exports.validate = (method) => {
         body(
           'password', 
           'Password is too weak. Password should contain at least: ' +
-          '1 Lowercase letter, ' +
-          '1 Uppercase letter, ' +
-          '1 Number, and ' +
+          '8 characters\n' +
+          '1 Lowercase letter, \n' +
+          '1 Uppercase letter, \n' +
+          '1 Number, and \n' +
           '1 Symbol'
         ).isStrongPassword().isLength({min:8, max: 254}).trim().escape(),
         body(

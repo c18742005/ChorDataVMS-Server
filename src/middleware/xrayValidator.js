@@ -17,12 +17,12 @@ exports.validate = (method) => {
           .exists().isAlpha("en-GB", {ignore: " -"}).isLength({min:1, max: 254}).trim().escape(),
         body(
           'xray_kV', 
-          'X-ray kV cannot be empty and must be numeric')
-          .exists().isNumeric().isLength({min:1, max: 254}).trim().escape(),
+          'X-ray kV cannot be empty and must be between 0.01 and 19.99')
+          .exists().isFloat({ min: 0.01, max: 19.99 }).isLength({min:1, max: 254}).trim().escape(),
         body(
           'xray_mAs', 
-          'X-ray mAs cannot be empty and must be numeric')
-          .exists().isNumeric().isLength({min:1, max: 254}).trim().escape(),
+          'X-ray mAs cannot be empty and must be between 0.01 and 19.99')
+          .exists().isFloat({ min: 0.01, max: 19.99 }).isLength({min:1, max: 254}).trim().escape(),
         body(
           'xray_position', 
           'X-ray position cannot be empty and must only use alphanumeric characters')
@@ -30,7 +30,7 @@ exports.validate = (method) => {
         body(
           'xray_patient_id', 
           'Patient ID must be numeric and cannot be empty')
-          .exists().isNumeric().isLength({min:1, max: 254}).trim().escape()
+          .exists().isNumeric({no_symbols: true}).isLength({min:1, max: 254}).trim().escape()
       ]   
     }
   }

@@ -104,7 +104,8 @@ exports.findDrugLogByClinic = async (req, res) => {
         SELECT drug_batch_id FROM drug_stock 
         WHERE drug_stock_drug_id = $1
         AND drug_stock_clinic_id = $2
-      );`,
+      )
+      ORDER BY dl.drug_date_administered DESC;`,
       [drugId, clinicId]
     );
 
@@ -260,7 +261,7 @@ exports.administerDrug = async (req, res) => {
     }
 
     // Send error if not enough in stock
-    if(drug.rows[0].drug_quantity_remaining < drug_quantity_given) {
+    if(drug.rows[0].drug_quantity_remaining < parseFloat(drug_quantity_given)) {
       return res.status(400).json(
         `Not enough drugs left in batch ${drug.rows[0].drug_batch_id}.
         ${drug.rows[0].drug_quantity_remaining}${drug.rows[0].drug_quantity_measure} remaining.
@@ -298,6 +299,8 @@ exports.administerDrug = async (req, res) => {
       );
     }
 
+    let id = 0;
+
     // Insert log into DB
     await db.query(
       `INSERT INTO drug_log(
@@ -308,7 +311,7 @@ exports.administerDrug = async (req, res) => {
         drug_staff_id
       )
       VALUES ($1, $2, $3, $4, $5) 
-      RETURNING *`,
+      RETURNING drug_log_id`,
       [
         drug_date_given, 
         drug_quantity_given,
@@ -316,7 +319,7 @@ exports.administerDrug = async (req, res) => {
         drug_patient_id,
         drug_staff_id
       ]).then(res => {
-        body = res.rows[0]
+        id = res.rows[0].drug_log_id
       })
 
     // Update quantity in drug stock
@@ -330,8 +333,27 @@ exports.administerDrug = async (req, res) => {
         drug_log_drug_stock_id
       ])
 
-    res.status(201).send({
-      message: "Drug Log added successfully!",
+      await db.query(
+        `SELECT 
+          dl.drug_quantity_given, dl.drug_date_administered, 
+          ds.drug_batch_id, ds.drug_quantity_measure, 
+          p.patient_name, 
+          sm.staff_username 
+        FROM drug_log dl
+        INNER JOIN drug_stock ds ON 
+          dl.drug_log_drug_stock_id = ds.drug_batch_id
+        INNER JOIN patient p ON 
+          dl.drug_patient_id = p.patient_id
+        INNER JOIN staff_member sm ON 
+          dl.drug_staff_id = sm.staff_member_id
+        WHERE drug_log_id = $1;`,
+        [id]
+      ).then(res => {
+        body = res.rows[0]
+      })
+  
+    res.status(200).send({ 
+      message: "Drug Successfully!",
       body
     });
   } catch (err) {

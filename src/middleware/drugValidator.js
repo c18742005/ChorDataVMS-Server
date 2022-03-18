@@ -14,11 +14,11 @@ exports.validate = (method) => {
         body(
           'drug_batch_id', 
           'Batch number must be numerical and cannot be empty')
-          .exists().isNumeric().isLength({min:1, max: 254}).trim().escape(),
+          .exists().isNumeric({no_symbols: true}).isLength({min:1, max: 254}).trim().escape(),
         body(
           'drug_quantity', 
-          'Drug quantity must be numeric and cannot be empty')
-          .exists().isNumeric().isLength({min:1, max: 254}).trim(),
+          'Drug quantity must be numeric and be between 0.01 and 999.99')
+          .exists().isFloat({ min: 0.01, max: 999.99 }).trim().escape(),
         body(
           'drug_concentration', 
           'Drug concentration must be alphanumeric and cannot be empty')
@@ -34,7 +34,7 @@ exports.validate = (method) => {
         body(
           'drug_log_drug_stock_id', 
           'Batch number must be numerical and cannot be empty')
-          .exists().isNumeric().isLength({min:1, max: 254}).trim().escape(),
+          .exists().isNumeric({no_symbols: true}).isLength({min:1, max: 254}).trim().escape(),
         body(
           'drug_quantity_given', 
           'Drug quantity must be alphanumeric and cannot be empty')

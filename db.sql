@@ -1,5 +1,6 @@
 CREATE DATABASE chordata;
 
+DROP TABLE IF EXISTS tooth;
 DROP TABLE IF EXISTS xray;
 DROP TABLE IF EXISTS drug_log;
 DROP TABLE IF EXISTS drug_stock;
@@ -15,12 +16,13 @@ CREATE TABLE clinic(
     clinic_address VARCHAR(255) NOT NULL
 );
 
+-- INSERT EXAMPLE CLINICS
 INSERT INTO clinic(clinic_name, clinic_address) 
 VALUES ('Example Clinic', '10 Test Lane, Dublin 4');
 
 CREATE TABLE staff_member(
     staff_member_id SERIAL PRIMARY KEY,
-    staff_username VARCHAR(255) NOT NULL,
+    staff_username VARCHAR(255) UNIQUE NOT NULL,
     staff_password VARCHAR(255) NOT NULL,
     staff_role VARCHAR(255) NOT NULL,
     staff_clinic_id INTEGER NOT NULL,
@@ -29,9 +31,6 @@ CREATE TABLE staff_member(
             REFERENCES clinic(clinic_id)
             ON DELETE CASCADE
 );
-
-INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id) 
-VALUES ('testuser', 'password', 'vet', 1);
 
 CREATE TABLE client(
     client_id SERIAL PRIMARY KEY,
@@ -59,7 +58,7 @@ CREATE TABLE patient(
     patient_breed VARCHAR(255) NOT NULL,
     patient_sex VARCHAR(3) NOT NULL,
     patient_color VARCHAR(255) NOT NULL,
-    patient_microchip VARCHAR(255) NOT NULL,
+    patient_microchip VARCHAR(255) UNIQUE NOT NULL,
     patient_inactive BOOLEAN NOT NULL,
     patient_reason_inactive VARCHAR(255),
     patient_client_id INTEGER NOT NULL,
@@ -75,6 +74,7 @@ CREATE TABLE drug(
     drug_link VARCHAR(255) NOT NULL
 );
 
+-- ENTER DRUGS INTO DRUG TABLE 
 INSERT INTO drug(drug_name, drug_link) 
 VALUES ('Methadone', 'https://rb.gy/6jbtqh');
 
@@ -93,6 +93,11 @@ VALUES ('Morphine', 'https://rb.gy/9y5ijt');
 INSERT INTO drug(drug_name, drug_link) 
 VALUES ('Pethidine', 'https://rb.gy/ctcd2g');
 
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Buprenorphine', 'https://rb.gy/baqkt0');
+
+INSERT INTO drug(drug_name, drug_link) 
+VALUES ('Butorphanol', 'https://rb.gy/v91lqi');
 
 CREATE TABLE drug_stock(
     drug_batch_id VARCHAR(255) PRIMARY KEY,
@@ -156,4 +161,16 @@ CREATE TABLE xray(
         FOREIGN KEY (xray_clinic_id)
             REFERENCES clinic(clinic_id)
             ON DELETE CASCADE
+);
+
+CREATE TABLE tooth(
+    tooth_id INTEGER,
+    tooth_patient_id INTEGER,
+    tooth_problem VARCHAR(255),
+    tooth_note VARCHAR(1024),
+    CONSTRAINT fk_tooth_patient
+        FOREIGN KEY (tooth_patient_id)
+            REFERENCES patient(patient_id)
+            ON DELETE CASCADE,
+    PRIMARY KEY(tooth_id, tooth_patient_id)
 );
