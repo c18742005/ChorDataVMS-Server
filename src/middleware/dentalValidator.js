@@ -14,7 +14,7 @@ exports.validate = (method) => {
         body(
           'tooth_note', 
           'Notes can only consist of alphabetic characters')
-          .trim()
+          .optional({checkFalsy: true}).isAlphanumeric("en-GB", {ignore: " -/"}).isLength({min:1, max: 1023}).trim()
       ]   
     }
   }

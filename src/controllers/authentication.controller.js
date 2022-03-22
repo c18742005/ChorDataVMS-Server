@@ -115,11 +115,16 @@ exports.loginStaffMember = async (req, res) => {
       [username]
     );
 
+    // Return 401 error as username or password is incorrect
+    if(staff_member.rows.length === 0) {
+      return res.status(401).json("Username/Password is incorrect");
+    }
+
     // Check if incoming password matches DB password
     const validPassword = await bcrypt.compare(password, staff_member.rows[0].staff_password);
 
     // Return 401 error as username or password is incorrect
-    if(!validPassword || staff_member.rows.length === 0) {
+    if(!validPassword) {
       return res.status(401).json("Username/Password is incorrect");
     }
 

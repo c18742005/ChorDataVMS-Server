@@ -9,7 +9,7 @@ exports.validate = (method) => {
       return [ 
         body(
           'username', 
-          'Username must have a value'
+          'Username must have a value and must be greater than 5 characters'
         ).exists().isAlpha("en-GB").isLength({min:5, max: 254}).trim().escape(),
         body(
           'password', 
@@ -26,7 +26,7 @@ exports.validate = (method) => {
       return [ 
         body(
           'username', 
-          'Username must have a value'
+          'Username must have a value and be greater than 5 characters'
         ).exists().isAlpha("en-GB").isLength({min:5, max: 254}).trim().escape(),
         body(
           'password', 

@@ -94,15 +94,23 @@ exports.addCremation = async (req, res) => {
 
     // Check if patient is deactivated
     const patient_status = await db.query(
-      "SELECT patient_name, patient_inactive FROM patient WHERE patient_id = $1", 
+      "SELECT patient_name, patient_inactive, patient_reason_inactive FROM patient WHERE patient_id = $1", 
       [cremation_patient_id]
     );
 
-    // Send error as patient acc is inactive
-    if(patient_status.rows[0].patient_inactive === true) {
+    // Send error as patient acc is not deactivated
+    if(patient_status.rows[0].patient_inactive !== true) {
       return res.status(403).json(
-        `Patient ${patient_status.rows[0].patient_name} is inactive!
-        Please reactivate patient before cremating.`
+        `Patient ${patient_status.rows[0].patient_name} is not deactivated!
+        Please deactivate before cremating.`
+      );
+    }
+
+    // Send error as patient acc is not deactivated
+    if(patient_status.rows[0].patient_reason_inactive !== 'Patient Deceased') {
+      return res.status(403).json(
+        `Patient ${patient_status.rows[0].patient_name} is not marked as deceased!
+        Please mark patient as deceased in deactivation before cremating.`
       );
     }
 
@@ -226,6 +234,31 @@ exports.updateCremationById = async (req, res) => {
   try{
     const cremationId = parseInt(req.params.id);
 
+    // Check if patient is deactivated
+    const patient_status = await db.query(
+      `SELECT p.patient_name, p.patient_inactive, p.patient_reason_inactive 
+      FROM cremation c
+      INNER JOIN patient p ON patient_id = cremation_patient_id
+      WHERE cremation_id = $1`, 
+      [cremationId]
+    );
+
+    // Send error as patient acc is not deactivated
+    if(patient_status.rows[0].patient_inactive !== true) {
+      return res.status(403).json(
+        `Patient ${patient_status.rows[0].patient_name} is not deactivated!
+        Please deactivate before cremating.`
+      );
+    }
+
+     // Send error as patient acc is not deactivated
+     if(patient_status.rows[0].patient_reason_inactive !== 'Patient Deceased') {
+      return res.status(403).json(
+        `Patient ${patient_status.rows[0].patient_name} is not marked as deceased!
+        Please mark patient as deceased in deactivation before cremating.`
+      );
+    }
+
     // Destructure req body
     const { 
       cremation_date_collected,
@@ -234,12 +267,35 @@ exports.updateCremationById = async (req, res) => {
       cremation_form,
       cremation_owner_contacted,
       cremation_patient_id } = req.body;
+
+    // Format Dates 
+    let date_collected;
+    let date_returned_practice;
+    let date_returned_owner;
+
+    if(cremation_date_collected === '') {
+      date_collected = null;
+    } else {
+      date_collected = cremation_date_collected;
+    }
+
+    if(cremation_date_ashes_returned_practice === '') {
+      date_returned_practice = null;
+    } else {
+      date_returned_practice = cremation_date_ashes_returned_practice;
+    }
+
+    if(cremation_date_ashes_returned_owner === '') {
+      date_returned_owner = null;
+    } else {
+      date_returned_owner = cremation_date_ashes_returned_owner;
+    }
     
     // Update the cremation DB record
     await db.query(
       `UPDATE cremation
       SET 
-        cremation_date = $1,
+        cremation_date_collected = $1,
         cremation_date_ashes_returned_practice = $2,
         cremation_date_ashes_returned_owner = $3,
         cremation_form = $4,
@@ -248,9 +304,9 @@ exports.updateCremationById = async (req, res) => {
       WHERE cremation_id = $7
       RETURNING * `,
       [
-        cremation_date_collected,
-        cremation_date_ashes_returned_practice,
-        cremation_date_ashes_returned_owner,
+        date_collected,
+        date_returned_practice,
+        date_returned_owner,
         cremation_form,
         cremation_owner_contacted,
         cremation_patient_id,
@@ -314,33 +370,20 @@ exports.deleteCremationById = async (req, res) => {
 
     // Check if patient is cremated
      const patient = await db.query(
-      "SELECT patient_name FROM patient WHERE patient_id = $1", 
+      "SELECT cremation_id FROM cremation WHERE cremation_id = $1", 
       [cremationId]
     );
 
     // Send error as patient is not on cremation tables
-    if(patient.rows[0].length === 0) {
-      const patient_name = patient.rows[0].patient_name
+    if(patient.rows.length === 0) {
       return res.status(403).json(
-        `Patient (${patient_name}) is not in cremation table!`
+        `Patient is not in cremation table!`
       );
     }
 
     // Remove the cremation
-    await db.query('DELETE FROM cremation WHERE cremation_id = $1', 
+    await db.query(`DELETE FROM cremation WHERE cremation_id = $1`, 
       [cremationId]);
-
-    // Update the patient DB record
-    await db.query(
-      `UPDATE patient
-      SET 
-        patient_inactive = false,
-        patient_reason_inactive = ''
-      WHERE patient_id = $1`,
-      [
-        cremationId
-      ]
-    );
   
     res.status(200).send({ message: 'Cremation deleted successfully!', cremationId });
   } catch (err) {

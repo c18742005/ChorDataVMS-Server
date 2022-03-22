@@ -4,11 +4,13 @@
 const router = require('express-promise-router')();
 const authorisation = require("../middleware/authorisation");
 const cremationController = require('../controllers/cremation.controller');
+const cremationValidator = require("../middleware/cremationValidator");
 
 // Route to add a cremation to log
 router.post(
   '/cremations', 
   authorisation,
+  cremationValidator.validate('validateCremationForm'),
   cremationController.addCremation
 ); 
 
@@ -19,6 +21,7 @@ router.get('/cremations/clinic/:id', authorisation, cremationController.findCrem
 router.put(
   '/cremations/:id', 
   authorisation,
+  cremationValidator.validate('validateCremationForm'),
   cremationController.updateCremationById
 );
 
