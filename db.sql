@@ -1,5 +1,6 @@
 CREATE DATABASE chordata;
 
+DROP TABLE IF EXISTS cremation;
 DROP TABLE IF EXISTS tooth;
 DROP TABLE IF EXISTS xray;
 DROP TABLE IF EXISTS drug_log;
@@ -173,4 +174,23 @@ CREATE TABLE tooth(
             REFERENCES patient(patient_id)
             ON DELETE CASCADE,
     PRIMARY KEY(tooth_id, tooth_patient_id)
+);
+
+CREATE TABLE cremation(
+    cremation_id SERIAL PRIMARY KEY,
+    cremation_patient_id INTEGER NOT NULL,
+    cremation_clinic_id INTEGER NOT NULL,
+    cremation_form VARCHAR(255) NOT NULL,
+    cremation_owner_contacted BOOLEAN NOT NULL,
+    cremation_date_collected DATE,
+    cremation_date_ashes_returned_practice DATE,
+    cremation_date_ashes_returned_owner DATE,
+    CONSTRAINT fk_cremation_patient
+        FOREIGN KEY (cremation_patient_id)
+            REFERENCES patient(patient_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_cremation_clinic
+        FOREIGN KEY (cremation_clinic_id)
+            REFERENCES clinic(clinic_id)
+            ON DELETE CASCADE
 );

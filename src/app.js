@@ -12,6 +12,7 @@ const authenticationRoute = require('./routes/authentication.routes');
 const drugRoute = require('./routes/drug.routes');
 const xrayRoute = require('./routes/xray.routes');
 const dentalRoute = require('./routes/dental.routes');
+const cremationRoute = require('./routes/cremation.routes');
 
 const origin = `${process.env.CORS_URL}`
 
@@ -35,5 +36,6 @@ app.use('/api/', authenticationRoute);
 app.use('/api/', drugRoute);
 app.use('/api/', xrayRoute);
 app.use('/api/', dentalRoute);
+app.use('/api/', cremationRoute);
 
 module.exports = app;

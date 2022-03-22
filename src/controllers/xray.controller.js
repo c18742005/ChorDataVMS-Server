@@ -27,6 +27,7 @@ exports.findXraysByClinicId = async (req, res) => {
         x.xray_position,
         x.xray_patient_id,
         p.patient_name, 
+        p.patient_microchip,
         sm.staff_username 
       FROM xray x
       INNER JOIN patient p ON 
@@ -65,6 +66,7 @@ exports.findXraysByPatientId = async (req, res) => {
         x.xray_mAs,
         x.xray_position,
         p.patient_name, 
+        p.patient_microchip,
         sm.staff_username 
       FROM xray x
       INNER JOIN patient p ON 

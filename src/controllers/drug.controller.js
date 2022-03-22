@@ -92,6 +92,7 @@ exports.findDrugLogByClinic = async (req, res) => {
         dl.drug_quantity_given, dl.drug_date_administered, 
         ds.drug_batch_id, ds.drug_quantity_measure, 
         p.patient_name, 
+        p.patient_microchip,
         sm.staff_username 
       FROM drug_log dl
       INNER JOIN drug_stock ds ON 
@@ -338,6 +339,7 @@ exports.administerDrug = async (req, res) => {
           dl.drug_quantity_given, dl.drug_date_administered, 
           ds.drug_batch_id, ds.drug_quantity_measure, 
           p.patient_name, 
+          p.patient_microchip,
           sm.staff_username 
         FROM drug_log dl
         INNER JOIN drug_stock ds ON 
