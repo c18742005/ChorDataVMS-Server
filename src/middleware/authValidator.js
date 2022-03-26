@@ -10,7 +10,7 @@ exports.validate = (method) => {
         body(
           'username', 
           'Username must have a value and must be greater than 5 characters'
-        ).exists().isAlpha("en-GB").isLength({min:5, max: 254}).trim().escape(),
+        ).exists().isAlphanumeric("en-GB", {ignore: "_."}).isLength({min:5, max: 254}).trim().escape(),
         body(
           'password', 
           'Password is too weak. Password should contain at least: ' +
@@ -27,7 +27,7 @@ exports.validate = (method) => {
         body(
           'username', 
           'Username must have a value and be greater than 5 characters'
-        ).exists().isAlpha("en-GB").isLength({min:5, max: 254}).trim().escape(),
+        ).exists().isAlphanumeric("en-GB", {ignore: "_."}).isLength({min:5, max: 254}).trim().escape(),
         body(
           'password', 
           'Password is too weak. Password should contain at least: ' +
@@ -36,7 +36,11 @@ exports.validate = (method) => {
           '1 Uppercase letter, \n' +
           '1 Number, and \n' +
           '1 Symbol'
-        ).isStrongPassword().isLength({min:8, max: 254}).trim().escape(),
+        ).exists().isStrongPassword().isLength({min:8, max: 254}).trim().escape(),
+        body(
+          'role', 
+          'Role must be one of Vet, Nurse, ACA, Receptionist'
+        ).exists().isAlphanumeric("en-GB", {ignore: " -"}).isIn(["Vet", "Nurse", "Receptionist", "ACA"]).trim().escape(),
         body(
           'clinic_id', 
           'Clinic ID must be made up of numeric characters and not contain +, -, or .'

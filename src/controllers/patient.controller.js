@@ -317,7 +317,7 @@ exports.updatePatientById = async (req, res) => {
       ]
     );
 
-    res.status(200).send({ message: "Patient Updated Successfully!" });
+    res.status(201).send({ message: "Patient Updated Successfully!" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");

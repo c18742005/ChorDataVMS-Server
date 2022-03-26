@@ -64,19 +64,15 @@ exports.registerStaffMember = async (req, res) => {
     const salt = await bcrypt.genSalt(saltRound);
     const bcryptPassword = await bcrypt.hash(password, salt);
 
-    // Enter staff_member into database
-    const newStaff = await db.query(
-      `INSERT INTO staff_member (staff_username, staff_password, staff_role, staff_clinic_id) 
-      VALUES ($1, $2, $3, $4) 
-      RETURNING *`, 
-      [username, bcryptPassword, role, clinic_id]
-    );
+    const staff_info = await this.insertStaff(username, bcryptPassword, role, clinic_id);
 
     // Generate a jwt token
-    const token = jwtGenerator(newStaff.rows[0]);
-    const staff_info = newStaff.rows[0];
+    if (staff_info !== 0) {
+      const token = jwtGenerator(staff_info);
+      return res.status(201).json({ token, staff_info });
+    }
 
-    res.status(201).json({ token, staff_info });
+    return res.status(401).json("Error inserting new staff");
 
   } catch (err) {
     console.error(err.message);
@@ -110,10 +106,7 @@ exports.loginStaffMember = async (req, res) => {
     const { username, password } = req.body;
 
     // Check staff member exists
-    const staff_member = await db.query(
-      "SELECT * FROM staff_member WHERE staff_username = $1", 
-      [username]
-    );
+    const staff_member = await this.getStaffByUsername(username);
 
     // Return 401 error as username or password is incorrect
     if(staff_member.rows.length === 0) {
@@ -132,7 +125,7 @@ exports.loginStaffMember = async (req, res) => {
     const token = jwtGenerator(staff_member.rows[0]);
     const staff_info = staff_member.rows[0];
 
-    res.status(200).json({ token, staff_info });
+    res.status(201).json({ token, staff_info });
 
   } catch (err) {
     console.error(err.message);
@@ -154,4 +147,48 @@ exports.verifyStaffMember = async (req, res) => {
     console.error(err.message);
     res.status(500).json("Server error");
   }
-} 
+}
+
+/*
+  Insert New Staff Into DB
+
+  Returns:
+    (Success) Object: staff_member object created
+    (Error) Integer: 0
+*/
+exports.insertStaff = async (username, password, role, clinic_id) => {
+  try {
+    const new_staff = await db.query(
+      `INSERT INTO staff_member (staff_username, staff_password, staff_role, staff_clinic_id) 
+      VALUES ($1, $2, $3, $4) 
+      RETURNING *`, 
+      [username, password, role, clinic_id]
+    );
+
+    return new_staff.rows[0];
+  } catch (err) {
+    console.error(err.message);
+    return 0;
+  }
+}
+
+/*
+  Get Staff From DB
+
+  Returns:
+    (Success) Object: staff_member object created
+    (Error) Integer: 0
+*/
+exports.getStaffByUsername = async (username) => {
+  try {
+    const staff_members = await db.query(
+      "SELECT * FROM staff_member WHERE staff_username = $1", 
+      [username]
+    );
+
+    return staff_members;
+  } catch (err) {
+    console.error(err.message);
+    return 0;
+  }
+}
