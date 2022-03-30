@@ -36,7 +36,7 @@ exports.createClient = async (req, res) => {
         
     // Send success response 
     res.status(201).send({
-      message: "Client added successfully!",
+      message: "Client added successfully",
       body
     });
   } catch (err) {
@@ -126,7 +126,7 @@ exports.updateClientById = async (req, res) => {
       return res.status(400).json({ message: "Unable to update client" });
     }
 
-    res.status(201).send({ message: "Client updated successfully!" });
+    res.status(201).send({ message: "Client updated successfully" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
@@ -170,7 +170,7 @@ exports.deactivateClientById = async (req, res) => {
       return res.status(400).send({ message: "Client deactivation failed" });
     }
 
-    res.status(201).send({ message: "Client and associated pets deactivated!" });
+    res.status(201).send({ message: "Client and associated pets deactivated" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
@@ -196,15 +196,15 @@ exports.reactivateClientById = async (req, res) => {
 
     const patientsActive = await this.setPatientsActive(clientId);
     if(patientsActive === 400) {
-      return res.status(400).send({ message: "Client and associated pets were not reactivated!" });
+      return res.status(400).send({ message: "Client and associated pets were not reactivated" });
     }
 
     const clientActive = await this.setClientActive(clientId);
     if(clientActive === 400) {
-      return res.status(400).send({ message: "Client and associated pets were not reactivated!" });
+      return res.status(400).send({ message: "Client and associated pets were not reactivated" });
     }
   
-    res.status(201).send({ message: "Client and associated pets reactivated!" });
+    res.status(201).send({ message: "Client and associated pets reactivated" });
   } catch (err) {
     console.error(err);
     res.status(500).json("Server error");
@@ -226,7 +226,7 @@ exports.deleteClientById = async (req, res) => {
     await db.query('DELETE FROM client WHERE client_id = $1', 
       [clientId]);
   
-    res.status(200).send({ message: 'Client deleted successfully!', clientId });
+    res.status(200).send({ message: 'Client deleted successfully', clientId });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");

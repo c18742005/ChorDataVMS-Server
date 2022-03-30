@@ -88,7 +88,7 @@ exports.addCremation = async (req, res) => {
     // Send error as patient is already cremated
     if(patient.rows.length > 0) {
       return res.status(403).json(
-        `Patient is already cremated!`
+        `Patient is already cremated`
       );
     }
 
@@ -101,7 +101,7 @@ exports.addCremation = async (req, res) => {
     // Send error as patient acc is not deactivated
     if(patient_status.rows[0].patient_inactive !== true) {
       return res.status(403).json(
-        `Patient ${patient_status.rows[0].patient_name} is not deactivated!
+        `Patient ${patient_status.rows[0].patient_name} is not deactivated.
         Please deactivate before cremating.`
       );
     }
@@ -109,7 +109,7 @@ exports.addCremation = async (req, res) => {
     // Send error as patient acc is not deactivated
     if(patient_status.rows[0].patient_reason_inactive !== 'Patient Deceased') {
       return res.status(403).json(
-        `Patient ${patient_status.rows[0].patient_name} is not marked as deceased!
+        `Patient ${patient_status.rows[0].patient_name} is not marked as deceased
         Please mark patient as deceased in deactivation before cremating.`
       );
     }
@@ -192,7 +192,7 @@ exports.addCremation = async (req, res) => {
     ).then(res => body = res.rows[0])
 
     res.status(200).send({ 
-      message: "Cremation Added Successfully!",
+      message: "Cremation Added Successfully",
       body
      });
   } catch (err) {
@@ -246,7 +246,7 @@ exports.updateCremationById = async (req, res) => {
     // Send error as patient acc is not deactivated
     if(patient_status.rows[0].patient_inactive !== true) {
       return res.status(403).json(
-        `Patient ${patient_status.rows[0].patient_name} is not deactivated!
+        `Patient ${patient_status.rows[0].patient_name} is not deactivated.
         Please deactivate before cremating.`
       );
     }
@@ -254,7 +254,7 @@ exports.updateCremationById = async (req, res) => {
      // Send error as patient acc is not deactivated
      if(patient_status.rows[0].patient_reason_inactive !== 'Patient Deceased') {
       return res.status(403).json(
-        `Patient ${patient_status.rows[0].patient_name} is not marked as deceased!
+        `Patient ${patient_status.rows[0].patient_name} is not marked as deceased.
         Please mark patient as deceased in deactivation before cremating.`
       );
     }
@@ -346,7 +346,7 @@ exports.updateCremationById = async (req, res) => {
     ).then(res => body = res.rows[0])
 
     res.status(200).send({ 
-      message: "Cremation Updated Successfully!",
+      message: "Cremation Updated Successfully",
       body
      });
   } catch (err) {
@@ -377,7 +377,7 @@ exports.deleteCremationById = async (req, res) => {
     // Send error as patient is not on cremation tables
     if(patient.rows.length === 0) {
       return res.status(403).json(
-        `Patient is not in cremation table!`
+        `Patient is not in cremation table`
       );
     }
 
@@ -385,7 +385,7 @@ exports.deleteCremationById = async (req, res) => {
     await db.query(`DELETE FROM cremation WHERE cremation_id = $1`, 
       [cremationId]);
   
-    res.status(200).send({ message: 'Cremation deleted successfully!', cremationId });
+    res.status(200).send({ message: 'Cremation deleted successfully', cremationId });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");

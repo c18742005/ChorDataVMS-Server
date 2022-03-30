@@ -175,6 +175,7 @@ exports.addXray = async (req, res) => {
         x.xray_position,
         x.xray_patient_id,
         p.patient_name, 
+        p.patient_microchip,
         sm.staff_username 
       FROM xray x
       INNER JOIN patient p ON 
@@ -186,7 +187,7 @@ exports.addXray = async (req, res) => {
     ).then(res => body = res.rows[0])
 
     res.status(200).send({ 
-      message: "X-ray Added Successfully!",
+      message: "X-ray Added Successfully",
       body
      });
   } catch (err) {
@@ -280,6 +281,7 @@ exports.updateXrayById = async (req, res) => {
         x.xray_position,
         x.xray_patient_id,
         p.patient_name, 
+        p.patient_microchip,
         sm.staff_username 
       FROM xray x
       INNER JOIN patient p ON 
@@ -291,7 +293,7 @@ exports.updateXrayById = async (req, res) => {
     ).then(res => body = res.rows[0])
 
     res.status(200).send({ 
-      message: "X-ray Updated Successfully!",
+      message: "X-ray Updated Successfully",
       body
      });
   } catch (err) {

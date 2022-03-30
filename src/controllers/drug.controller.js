@@ -52,7 +52,7 @@ exports.findDrugsStockByClinic = async (req, res) => {
     - (Number) drugid: Drug ID
 
   Returns: 
-    200: JSON drug dtock data
+    200: JSON drug stock data
     500: Error on the server side
 */
 exports.findDrugStockByClinic = async (req, res) => {
@@ -191,7 +191,7 @@ exports.addDrugStockToClinic = async (req, res) => {
       ]).then(res => body = res.rows[0])
 
     res.status(201).send({
-      message: "Drug Stock added successfully!",
+      message: "Drug Stock added successfully",
       body
     });
   } catch (err) {
@@ -257,7 +257,7 @@ exports.administerDrug = async (req, res) => {
         `Wrong unit of measure for batch ${drug.rows[0].drug_batch_id}.
         This batch uses ${drug.rows[0].drug_quantity_measure}. 
         You are attempting to use ${drug_quantity_measure}.
-        Please use the correct measurement when administering!`
+        Please use the correct measurement when administering`
       );
     }
 
@@ -266,7 +266,7 @@ exports.administerDrug = async (req, res) => {
       return res.status(400).json(
         `Not enough drugs left in batch ${drug.rows[0].drug_batch_id}.
         ${drug.rows[0].drug_quantity_remaining}${drug.rows[0].drug_quantity_measure} remaining.
-        Please use the remaining amount from this batch before starting a new batch!`
+        Please use the remaining amount from this batch before starting a new batch`
       );
     }
 
@@ -355,7 +355,7 @@ exports.administerDrug = async (req, res) => {
       })
   
     res.status(200).send({ 
-      message: "Drug Successfully!",
+      message: "Drug Successfully",
       body
     });
   } catch (err) {

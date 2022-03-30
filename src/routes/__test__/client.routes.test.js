@@ -42,7 +42,7 @@ describe("POST /api/clients", () => {
       expect(response.statusCode).toBe(201)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
       expect(response.body.body).toEqual(userPayload)
-      expect(response.body.message).toEqual("Client added successfully!")
+      expect(response.body.message).toEqual("Client added successfully")
     });
   });
 
@@ -176,7 +176,7 @@ describe("PUT /api/clients/:id", () => {
 
       expect(response.statusCode).toBe(201)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
-      expect(response.body.message).toEqual("Client updated successfully!")
+      expect(response.body.message).toEqual("Client updated successfully")
     });
   });
 
@@ -256,7 +256,7 @@ describe("PUT /api/clients/deactivate/:id", () => {
 
       expect(response.statusCode).toBe(201)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
-      expect(response.body.message).toEqual("Client and associated pets deactivated!")
+      expect(response.body.message).toEqual("Client and associated pets deactivated")
     });
   });
 
@@ -318,7 +318,7 @@ describe("PUT /api/clients/reactivate/:id", () => {
 
       expect(response.statusCode).toBe(201)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
-      expect(response.body.message).toEqual("Client and associated pets reactivated!")
+      expect(response.body.message).toEqual("Client and associated pets reactivated")
     });
   });
 

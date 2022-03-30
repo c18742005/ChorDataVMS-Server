@@ -150,7 +150,7 @@ exports.addDental = async (req, res) => {
       ]).then(res => body = res.rows)
 
     res.status(201).send({
-      message: "Dental added successfully!",
+      message: "Dental added successfully",
       body
     });
   } catch (err) {
@@ -231,7 +231,7 @@ exports.updateDental = async (req, res) => {
       })
   
     res.status(200).send({ 
-      message: "Dental updated successfully!",
+      message: "Dental updated successfully",
       body
     });
   } catch (err) {
@@ -315,7 +315,7 @@ exports.updateTooth = async (req, res) => {
     })
   
     res.status(200).send({ 
-      message: "Tooth updated successfully!",
+      message: "Tooth updated successfully",
       body
     });
   } catch (err) {

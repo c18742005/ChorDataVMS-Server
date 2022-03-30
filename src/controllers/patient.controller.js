@@ -187,7 +187,7 @@ exports.createPatient = async (req, res) => {
 
     // Send error res as microchip is taken
     if(patient.rows.length !== 0) {
-      return res.status(409).json("Microchip already belongs to another patient!");
+      return res.status(409).json("Microchip already belongs to another patient");
     }
   
     // Insert patient into DB
@@ -218,7 +218,7 @@ exports.createPatient = async (req, res) => {
     ).then(res => body = res.rows[0])
   
     res.status(201).send({
-      message: "Patient added successfully!",
+      message: "Patient added successfully",
       body
     });
   } catch (err) {
@@ -290,7 +290,7 @@ exports.updatePatientById = async (req, res) => {
 
     // Send error as microchip is taken
     if(microchip.rows.length > 0) {
-      return res.status(409).json("Microchip already belongs to another patient!");
+      return res.status(409).json("Microchip already belongs to another patient");
     }
   
     // Update the patient stored in the DB
@@ -317,7 +317,7 @@ exports.updatePatientById = async (req, res) => {
       ]
     );
 
-    res.status(201).send({ message: "Patient Updated Successfully!" });
+    res.status(201).send({ message: "Patient Updated Successfully" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
@@ -363,7 +363,7 @@ exports.deactivatePatientById = async (req, res) => {
       [1, patient_reason_inactive, patientId]
     );
 
-    res.status(200).send({ message: "Patient Deactivated!" });
+    res.status(200).send({ message: "Patient Deactivated" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
@@ -404,7 +404,7 @@ exports.reactivatePatientById = async (req, res) => {
       [0, null, patientId]
     );
 
-    res.status(200).send({ message: "Patient Reactivated!" });
+    res.status(200).send({ message: "Patient Reactivated" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
@@ -440,7 +440,7 @@ exports.deletePatientById = async (req, res) => {
     await db.query('DELETE FROM patient WHERE patient_id = $1', 
       [patientId]);
   
-    res.status(200).send({ message: 'Patient deleted successfully!', patientId });
+    res.status(200).send({ message: 'Patient deleted successfully', patientId });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
