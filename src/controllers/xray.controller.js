@@ -153,6 +153,7 @@ exports.addXray = async (req, res) => {
 
   Returns:
     200: JSON xray data
+    403: Patient is inactive
     422: Parameters do not pass validation
     500: Error on the server side
 */
@@ -165,20 +166,11 @@ exports.updateXrayById = async (req, res) => {
     return;
   }
 
-  let id = 0;
-
   try{
     const xrayId = parseInt(req.params.id);
 
-    // Destructure req body
-    const { 
-      xray_date,
-      xray_image_quality,
-      xray_kV,
-      xray_mAs,
-      xray_position,
-      xray_patient_id,
-      xray_staff_id } = req.body;
+    // Get the patient ID from the request body
+    const { xray_patient_id } = req.body;
 
     // Check if patient is deactivated
     const patient = await db.query(
@@ -194,21 +186,40 @@ exports.updateXrayById = async (req, res) => {
         Please reactivate ${patient_name} before taking xray`
       );
     }
-    
-    // Update the client DB record
+
+    // Update X-ray in DB
+    const response = await this.updateXray(xrayId, req.body)
+
+    if(response === 500) {
+      return res.status(500).json("Server Error: X-ray unable to be updated. Please try again")
+    }
+
+    res.status(201).send({ 
+      message: "X-ray Updated Successfully",
+      body: response
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server error");
+  }
+};
+
+/*
+  Add an xray to the database and return xray details
+  Request params:
+    - (Object) xray details
+
+  Returns:
+    (Success) Xray Object
+    (Error) Integer: 500
+*/
+exports.insertXray = async (xray) => {
+  let id = 0;
+
+  try {
+    // Insert xray log into DB
     await db.query(
-      `UPDATE xray
-      SET 
-        xray_date = $1,
-        xray_image_quality = $2,
-        xray_kV = $3,
-        xray_mAs = $4,
-        xray_position = $5,
-        xray_patient_id = $6,
-        xray_staff_id = $7
-      WHERE xray_id = $8
-      RETURNING * `,
-      [
+      `INSERT INTO xray(
         xray_date,
         xray_image_quality,
         xray_kV,
@@ -216,11 +227,23 @@ exports.updateXrayById = async (req, res) => {
         xray_position,
         xray_patient_id,
         xray_staff_id,
-        xrayId
+        xray_clinic_id ) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *`,
+      [
+        xray.xray_date,
+        xray.xray_image_quality,
+        xray.xray_kV,
+        xray.xray_mAs,
+        xray.xray_position,
+        xray.xray_patient_id,
+        xray.xray_staff_id,
+        xray.xray_clinic_id
       ]
-    ).then(res => id = res.rows[0].xray_id);
-
-    await db.query(
+    ).then(res => id = res.rows[0].xray_id)
+        
+    // Send success response 
+    const response = await db.query(
       `SELECT 
         x.xray_id,
         x.xray_date, 
@@ -239,72 +262,88 @@ exports.updateXrayById = async (req, res) => {
         x.xray_staff_id = sm.staff_member_id
       WHERE xray_id = $1;`,
       [id]
-    ).then(res => body = res.rows[0])
+    )
 
-    res.status(200).send({ 
-      message: "X-ray Updated Successfully",
-      body
-     });
+      // Error
+      if(response.rows.length === 0) {
+        return 500;
+      }
+
+      return response.rows[0];
   } catch (err) {
     console.error(err.message);
-    res.status(500).json("Server error");
-  }
-};
-
-exports.insertXray = async (xray) => {
-  let id = 0;
-  
-  // Insert xray log into DB
-  await db.query(
-    `INSERT INTO xray(
-      xray_date,
-      xray_image_quality,
-      xray_kV,
-      xray_mAs,
-      xray_position,
-      xray_patient_id,
-      xray_staff_id,
-      xray_clinic_id ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    RETURNING *`,
-    [
-      xray.xray_date,
-      xray.xray_image_quality,
-      xray.xray_kV,
-      xray.xray_mAs,
-      xray.xray_position,
-      xray.xray_patient_id,
-      xray.xray_staff_id,
-      xray.xray_clinic_id
-    ]
-  ).then(res => id = res.rows[0].xray_id)
-      
-  // Send success response 
-  const response = await db.query(
-    `SELECT 
-      x.xray_id,
-      x.xray_date, 
-      x.xray_image_quality, 
-      x.xray_kV,
-      x.xray_mAs,
-      x.xray_position,
-      x.xray_patient_id,
-      p.patient_name, 
-      p.patient_microchip,
-      sm.staff_username 
-    FROM xray x
-    INNER JOIN patient p ON 
-      x.xray_patient_id = p.patient_id
-    INNER JOIN staff_member sm ON 
-      x.xray_staff_id = sm.staff_member_id
-    WHERE xray_id = $1;`,
-    [id]
-  )
-
-  // Error
-  if(response.rows.length === 0) {
     return 500;
   }
+}
 
-  return response.rows[0];
+/*
+  Update an xray in the database
+  Request params:
+    - (Object) xray: xray details
+    - (Integer) xray_id: ID of xray to update
+
+  Returns:
+    (Success) Xray Object
+    (Error) Integer: 500
+*/
+exports.updateXray = async (xray_id, xray) => {
+  let id = 0;
+  
+  try {
+    // Update the client DB record
+    await db.query(
+      `UPDATE xray
+      SET 
+        xray_date = $1,
+        xray_image_quality = $2,
+        xray_kV = $3,
+        xray_mAs = $4,
+        xray_position = $5,
+        xray_patient_id = $6,
+        xray_staff_id = $7
+      WHERE xray_id = $8
+      RETURNING * `,
+      [
+        xray.xray_date,
+        xray.xray_image_quality,
+        xray.xray_kV,
+        xray.xray_mAs,
+        xray.xray_position,
+        xray.xray_patient_id,
+        xray.xray_staff_id,
+        xray_id
+      ]
+    ).then(res => id = res.rows[0].xray_id);
+
+    const response = await db.query(
+      `SELECT 
+        x.xray_id,
+        x.xray_date, 
+        x.xray_image_quality, 
+        x.xray_kV,
+        x.xray_mAs,
+        x.xray_position,
+        x.xray_patient_id,
+        p.patient_name, 
+        p.patient_microchip,
+        sm.staff_username 
+      FROM xray x
+      INNER JOIN patient p ON 
+        x.xray_patient_id = p.patient_id
+      INNER JOIN staff_member sm ON 
+        x.xray_staff_id = sm.staff_member_id
+      WHERE xray_id = $1;`,
+      [id]
+    )
+
+    // Error
+    if(response.rows.length === 0) {
+      return 500;
+    }
+
+    return response.rows[0];
+  } catch (err) {
+    console.error(err.message);
+    return 500;
+  }
 }
