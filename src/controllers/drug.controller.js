@@ -228,7 +228,7 @@ exports.addDrugStockToClinic = async (req, res) => {
     const response = await this.addDrugStock(req.body);
 
     if(response === 500) {
-      res.status(500).json("Server error adding drug to stock. Please try again")
+      return res.status(500).json("Server error adding drug to stock. Please try again")
     }
 
     res.status(201).send({
@@ -272,7 +272,6 @@ exports.administerDrug = async (req, res) => {
   try{
     // Destructure body or req
     const { 
-      drug_date_given, 
       drug_quantity_given,
       drug_quantity_measure,
       drug_log_drug_stock_id,
@@ -333,16 +332,91 @@ exports.administerDrug = async (req, res) => {
     );
 
     // Send error as staff is unauthorised to administer drug
-    if(staff_can_admin.rows[0].staff_role !== "Vet") {
-      const staff_name = staff_can_admin.rows[0].staff_username
+    if(staff_can_admin.rows.length === 0 || staff_can_admin.rows[0].staff_role !== "Vet") {
       return res.status(401).json(
-        `Staff member (${staff_name}) is not a vet. 
+        `Staff member is not a vet. 
         Please ensure the drug is administered by a certified vet`
       );
     }
 
-    let id = 0;
+    // Add drug log to DB
+    const response = await this.addDrugLog(req.body);
 
+    if(response === 500) {
+      return res.status(500).json("Server error adding drug to log. Please try again")
+    }
+
+    res.status(201).send({ 
+      message: "Drug successfully administered",
+      body: response
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server error");
+  }
+};
+
+/*
+  Add stock to the drug_stock table
+  Request params:
+    - (Object) stock: details of stock to add to db
+
+  Returns: 
+    (Success) Object: new stock added
+    (Error) Integer: 500
+*/
+exports.addDrugStock = async (stock) => {
+  try {
+    // Add stock to DB
+    const response = await db.query(
+    `INSERT INTO drug_stock(
+      drug_batch_id,
+      drug_expiry_date,
+      drug_quantity,
+      drug_quantity_measure,
+      drug_quantity_remaining,
+      drug_concentration,
+      drug_stock_drug_id,
+      drug_stock_clinic_id
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+    RETURNING *`,
+    [
+      stock.drug_batch_id, 
+      stock.drug_expiry_date, 
+      stock.drug_quantity, 
+      stock.drug_quantity_measure,
+      stock.drug_quantity,
+      stock.drug_concentration, 
+      stock.drug_stock_drug_id, 
+      stock.drug_stock_clinic_id
+    ])
+
+    if(response.rows.length === 0) {
+      return 500;
+    }
+
+    return response.rows[0];
+  } catch(err) {
+    console.error(err)
+    return 500;
+  }
+}
+
+/*
+  Add a log to the drug_log table
+  Request params:
+    - (Object) log: Details of the log to add to DB
+
+  Returns: 
+    (Success) Object: THe newly added log details
+    (Error) Integer: 500
+*/
+exports.addDrugLog = async (log) => {
+  let id = 0;
+
+  // Add log to DB
+  try {
     // Insert log into DB
     await db.query(
       `INSERT INTO drug_log(
@@ -355,14 +429,15 @@ exports.administerDrug = async (req, res) => {
       VALUES ($1, $2, $3, $4, $5) 
       RETURNING drug_log_id`,
       [
-        drug_date_given, 
-        drug_quantity_given,
-        drug_log_drug_stock_id,
-        drug_patient_id,
-        drug_staff_id
-      ]).then(res => {
-        id = res.rows[0].drug_log_id
-      })
+        log.drug_date_given, 
+        log.drug_quantity_given,
+        log.drug_log_drug_stock_id,
+        log.drug_patient_id,
+        log.drug_staff_id
+      ]
+    ).then(res => {
+      id = res.rows[0].drug_log_id
+    })
 
     // Update quantity in drug stock
     await db.query(
@@ -371,69 +446,36 @@ exports.administerDrug = async (req, res) => {
         drug_quantity_remaining = drug_quantity_remaining - $1
       WHERE drug_batch_id = $2`,
       [
-        drug_quantity_given,
-        drug_log_drug_stock_id
-      ])
+        log.drug_quantity_given,
+        log.drug_log_drug_stock_id
+      ]
+    )
 
-      await db.query(
-        `SELECT 
-          dl.drug_quantity_given, dl.drug_date_administered, 
-          ds.drug_batch_id, ds.drug_quantity_measure, 
-          p.patient_name, 
-          p.patient_microchip,
-          sm.staff_username 
-        FROM drug_log dl
-        INNER JOIN drug_stock ds ON 
-          dl.drug_log_drug_stock_id = ds.drug_batch_id
-        INNER JOIN patient p ON 
-          dl.drug_patient_id = p.patient_id
-        INNER JOIN staff_member sm ON 
-          dl.drug_staff_id = sm.staff_member_id
-        WHERE drug_log_id = $1;`,
-        [id]
-      ).then(res => {
-        body = res.rows[0]
-      })
+    const response = await db.query(
+      `SELECT 
+        dl.drug_quantity_given, dl.drug_date_administered, 
+        ds.drug_batch_id, ds.drug_quantity_measure, 
+        p.patient_name, 
+        p.patient_microchip,
+        sm.staff_username 
+      FROM drug_log dl
+      INNER JOIN drug_stock ds ON 
+        dl.drug_log_drug_stock_id = ds.drug_batch_id
+      INNER JOIN patient p ON 
+        dl.drug_patient_id = p.patient_id
+      INNER JOIN staff_member sm ON 
+        dl.drug_staff_id = sm.staff_member_id
+      WHERE drug_log_id = $1;`,
+      [id]
+    )
   
-    res.status(200).send({ 
-      message: "Drug Successfully",
-      body
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json("Server error");
-  }
-};
+    if(response.rows.length === 0) {
+      return 500;
+    }
 
-exports.addDrugStock = async (stock) => {
-  // Add stock to DB
-  const response = await db.query(
-  `INSERT INTO drug_stock(
-    drug_batch_id,
-    drug_expiry_date,
-    drug_quantity,
-    drug_quantity_measure,
-    drug_quantity_remaining,
-    drug_concentration,
-    drug_stock_drug_id,
-    drug_stock_clinic_id
-  )
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
-  RETURNING *`,
-  [
-    stock.drug_batch_id, 
-    stock.drug_expiry_date, 
-    stock.drug_quantity, 
-    stock.drug_quantity_measure,
-    stock.drug_quantity,
-    stock.drug_concentration, 
-    stock.drug_stock_drug_id, 
-    stock.drug_stock_clinic_id
-  ])
-
-  if(response.rows.length === 0) {
+    return response.rows[0];
+  } catch(err) {
+    console.error(err)
     return 500;
   }
-
-  return response.rows[0];
 }
