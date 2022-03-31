@@ -83,32 +83,32 @@ describe("POST /api/clients", () => {
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
     });
-  });
 
-  test("Should respond with a 422 status code", async () => {
-    const bodyData = {
-      client_forename: 23132, 
-      client_surname: 23131, 
-      client_address: 432234, 
-      client_city: 213321, 
-      client_county: 23123, 
-      client_phone: "String", 
-      client_email: "example", 
-      client_clinic_id: "One"
-    }
-
-    const staffBody =  {
-      username: "test.user",
-      password: "P@ssword1"
-    }
-    
-    const res = await request(app).post("/api/login").send(staffBody)
-    const token = res.body.token
-    const response = await request(app).post("/api/clients").set("token", token).send(bodyData)
-
-    expect(response.statusCode).toBe(422)
-    expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
-    expect(response.body.errors).toBeDefined()
+    test("Should respond with a 422 status code", async () => {
+      const bodyData = {
+        client_forename: 23132, 
+        client_surname: 23131, 
+        client_address: 432234, 
+        client_city: 213321, 
+        client_county: 23123, 
+        client_phone: "String", 
+        client_email: "example", 
+        client_clinic_id: "One"
+      }
+  
+      const staffBody =  {
+        username: "test.user",
+        password: "P@ssword1"
+      }
+      
+      const res = await request(app).post("/api/login").send(staffBody)
+      const token = res.body.token
+      const response = await request(app).post("/api/clients").set("token", token).send(bodyData)
+  
+      expect(response.statusCode).toBe(422)
+      expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
+      expect(response.body.errors).toBeDefined()
+    });
   });
 })
 

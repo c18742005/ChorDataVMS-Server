@@ -229,6 +229,9 @@ VALUES ('Captain', 8, 'Canine', 'Bernese Mountain Dog', 'MN', 'Black', '36457897
 INSERT INTO patient(
     patient_name, patient_age, patient_species, patient_breed, patient_sex, patient_color, patient_microchip, patient_inactive, patient_reason_inactive, patient_client_id) 
 VALUES ('Tweety', 4, 'Avian', 'African Grey Parrot', 'F', 'Grey', '657485342387734', TRUE, 'Client Deceased', 6);
+INSERT INTO patient(
+    patient_name, patient_age, patient_species, patient_breed, patient_sex, patient_color, patient_microchip, patient_inactive, patient_reason_inactive, patient_client_id) 
+VALUES ('Babe', 6, 'Feline', 'Domestic Longhair', 'F', 'Brown', '34857485901234', TRUE, 'Patient Deceased', 1);
 
 -- ENTER DRUGS INTO DRUG TABLE 
 INSERT INTO drug(drug_name, drug_link) 
