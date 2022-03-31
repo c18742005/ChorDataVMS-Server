@@ -34,10 +34,6 @@ exports.findCremationsByClinicId = async (req, res) => {
       WHERE cremation_clinic_id = $1;`,
       [clinicId]);
 
-    if(response.rows.length === 0) {
-      return res.status(400).json("No such clinic exists");
-    }
-
     res.status(200).send(response.rows);
   } catch (err) {
     console.error(err.message);
@@ -187,8 +183,6 @@ exports.updateCremationById = async (req, res) => {
     return;
   }
 
-  let id = 0;
-
   try{
     const cremationId = parseInt(req.params.id);
 
@@ -221,10 +215,7 @@ exports.updateCremationById = async (req, res) => {
     const { 
       cremation_date_collected,
       cremation_date_ashes_returned_practice,
-      cremation_date_ashes_returned_owner,
-      cremation_form,
-      cremation_owner_contacted,
-      cremation_patient_id } = req.body;
+      cremation_date_ashes_returned_owner } = req.body;
 
     // Format Dates 
     let date_collected;
@@ -250,63 +241,22 @@ exports.updateCremationById = async (req, res) => {
     }
     
     // Update the cremation DB record
-    await db.query(
-      `UPDATE cremation
-      SET 
-        cremation_date_collected = $1,
-        cremation_date_ashes_returned_practice = $2,
-        cremation_date_ashes_returned_owner = $3,
-        cremation_form = $4,
-        cremation_owner_contacted = $5,
-        cremation_patient_id = $6
-      WHERE cremation_id = $7
-      RETURNING * `,
-      [
-        date_collected,
-        date_returned_practice,
-        date_returned_owner,
-        cremation_form,
-        cremation_owner_contacted,
-        cremation_patient_id,
-        cremationId
-      ]
-    ).then(res => id = res.rows[0].cremation_id);
-
-    // Update the patient DB record
-    await db.query(
-      `UPDATE patient
-      SET 
-        patient_inactive = true,
-        patient_reason_inactive = 'Patient Deceased'
-      WHERE patient_id = $1`,
-      [
-        cremation_patient_id
-      ]
+    const result = await this.updateCremation(
+      cremationId, 
+      req.body, 
+      date_collected, 
+      date_returned_practice, 
+      date_returned_owner
     );
 
-    // Send success response 
-    await db.query(
-      `SELECT 
-        c.cremation_id,
-        c.cremation_date_collected, 
-        c.cremation_date_ashes_returned_practice, 
-        c.cremation_date_ashes_returned_owner, 
-        c.cremation_form, 
-        c.cremation_owner_contacted, 
-        c.cremation_patient_id,
-        p.patient_name, 
-        p.patient_microchip
-      FROM cremation c
-      INNER JOIN patient p ON 
-        c.cremation_patient_id = p.patient_id
-      WHERE cremation_id = $1;`,
-      [id]
-    ).then(res => body = res.rows[0])
+    if(result === 500) {
+      return res.status(500).json("Server error updating cremation. Please try again")
+    }
 
-    res.status(200).send({ 
+    res.status(201).send({ 
       message: "Cremation Updated Successfully",
-      body
-     });
+      body: result
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
@@ -319,7 +269,7 @@ exports.updateCremationById = async (req, res) => {
     - (Number) id: Cremation ID
 
   Returns: 
-    200: Success message on deletion
+    201: Success message on deletion
     500: Error on the server side
 */
 exports.deleteCremationById = async (req, res) => {
@@ -340,10 +290,13 @@ exports.deleteCremationById = async (req, res) => {
     }
 
     // Remove the cremation
-    await db.query(`DELETE FROM cremation WHERE cremation_id = $1`, 
-      [cremationId]);
+    const result = await this.removeCremation(cremationId);
   
-    res.status(200).send({ message: 'Cremation deleted successfully', cremationId });
+    if(result === 500) {
+      return res.status(500).json("Error removing cremation from server. Please try again");
+    }
+
+    res.status(201).send({ message: 'Cremation deleted successfully', cremationId });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
@@ -421,5 +374,123 @@ exports.insertCremation = async (cremation, coll_date, ret_date_p, ret_date_o) =
   } catch (err) {
     console.error(err.message);
     return 0;
+  }
+}
+
+/*
+  Insert New Cremation Into DB
+
+  Returns:
+    (Success) Object: New cremation details
+    (Error) Integer: 500
+*/
+exports.updateCremation = async (cremation_id, cremation, coll_date, ret_date_p, ret_date_o) => {
+  let id = 0;
+
+  try {
+    // Update the cremation details
+    await db.query(
+      `UPDATE cremation
+      SET 
+        cremation_date_collected = $1,
+        cremation_date_ashes_returned_practice = $2,
+        cremation_date_ashes_returned_owner = $3,
+        cremation_form = $4,
+        cremation_owner_contacted = $5,
+        cremation_patient_id = $6
+      WHERE cremation_id = $7
+      RETURNING * `,
+      [
+        coll_date,
+        ret_date_p,
+        ret_date_o,
+        cremation.cremation_form,
+        cremation.cremation_owner_contacted,
+        cremation.cremation_patient_id,
+        cremation_id
+      ]
+    ).then(res => id = res.rows[0].cremation_id);
+
+    // Update the patient DB record
+    await db.query(
+      `UPDATE patient
+      SET 
+        patient_inactive = true,
+        patient_reason_inactive = 'Patient Deceased'
+      WHERE patient_id = $1`,
+      [cremation.cremation_patient_id]
+    );
+        
+    // Update the patient DB record
+    await db.query(
+      `UPDATE patient
+      SET 
+        patient_inactive = true,
+        patient_reason_inactive = 'Patient Deceased'
+      WHERE patient_id = $1`,
+      [cremation.cremation_patient_id]
+    );
+
+    // Send success response 
+    const response = await db.query(
+      `SELECT 
+        c.cremation_id,
+        c.cremation_date_collected, 
+        c.cremation_date_ashes_returned_practice, 
+        c.cremation_date_ashes_returned_owner, 
+        c.cremation_form, 
+        c.cremation_owner_contacted, 
+        c.cremation_patient_id,
+        p.patient_name, 
+        p.patient_microchip
+      FROM cremation c
+      INNER JOIN patient p ON 
+        c.cremation_patient_id = p.patient_id
+      WHERE cremation_id = $1;`,
+      [id]
+    )
+    
+    if(response.rows.length === 0) {
+      return 500;
+    }
+
+    return response.rows[0];
+  } catch (err) {
+    console.error(err.message);
+    return 0;
+  }
+}
+
+/*
+  Remove Cremation from DB
+
+  Returns:
+    (Success) Integer: 201
+    (Error) Integer: 500
+*/
+exports.removeCremation = async (cremation_id) => {
+  try {
+    // Remove the cremation
+    await db.query(`DELETE FROM cremation WHERE cremation_id = $1`, 
+      [cremation_id]);
+
+    // Send success response 
+    const response = await db.query(
+      `SELECT 
+        cremation_id
+      FROM cremation
+      WHERE cremation_id = $1;`,
+      [cremation_id]
+    )
+    
+    // Cremation removal failed
+    if(response.rows.length !== 0) {
+      return 500;
+    }
+
+    return 201;
+  } catch (err) {
+    console.error(err.message);
+    return 500;
   }
 }
