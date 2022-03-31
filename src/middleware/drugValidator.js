@@ -21,8 +21,8 @@ exports.validate = (method) => {
           .exists().isFloat({ min: 0.01, max: 999.99 }).trim().escape(),
         body(
           'drug_concentration', 
-          'Drug concentration must be alphanumeric and cannot be empty')
-          .exists().isAlphanumeric("en-GB", {ignore: " -/"}).isLength({min:1, max: 254}).trim()
+          'Drug concentration cannot be empty')
+          .exists().isLength({min:1, max: 254}).trim()
       ]   
     }
     case 'validateDrugGiven': {

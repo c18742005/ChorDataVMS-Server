@@ -23,7 +23,7 @@ describe("GET /api/xrays/clinic/:id", () => {
 
   describe("When user is not authenticated", () => {
     test("Should respond with a 403 status code", async () => {
-      const response = await request(app).get("/api/staff")
+      const response = await request(app).get("/api/xrays/clinic/1")
 
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))

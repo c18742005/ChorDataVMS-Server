@@ -14,6 +14,11 @@ const { validationResult } = require('express-validator');
 exports.listAllDrugs = async (req, res) => {
   try{
     const response = await db.query('SELECT * FROM drug ORDER BY drug_name ASC');
+
+    if(response.rows.length === 0) {
+      return res.status(500).json("Failed to retrieve drug names from server");
+    }
+
     res.status(200).send(response.rows);
   } catch (err) {
     console.error(err.message);
@@ -28,11 +33,23 @@ exports.listAllDrugs = async (req, res) => {
 
   Returns: 
     200: JSON drug stock data
+    401: Clinic does not exist
     500: Error on the server side
 */
 exports.findDrugsStockByClinic = async (req, res) => {
   try{
     const clinicId = parseInt(req.params.id);
+
+    // check clinic exists
+    const clinic = await db.query(`
+      SELECT * FROM clinic
+      WHERE clinic_id = $1`,
+      [clinicId]
+    );
+
+    if(clinic.rows.length === 0) {
+      return res.status(401).json("Clinic does not exist");
+    }
 
     const response = await db.query(
       'SELECT * FROM drug_stock WHERE drug_stock_clinic_id = $1',
@@ -53,12 +70,35 @@ exports.findDrugsStockByClinic = async (req, res) => {
 
   Returns: 
     200: JSON drug stock data
+    401: Drug or clinic does not exist
     500: Error on the server side
 */
 exports.findDrugStockByClinic = async (req, res) => {
   try{
     const clinicId = parseInt(req.params.clinicid);
     const drugId = parseInt(req.params.drugid);
+
+    // check clinic exists
+    const clinic = await db.query(`
+      SELECT * FROM clinic
+      WHERE clinic_id = $1`,
+      [clinicId]
+    );
+
+    if(clinic.rows.length === 0) {
+      return res.status(401).json("Clinic does not exist");
+    }
+
+    // check drug exists
+    const drug = await db.query(`
+      SELECT * FROM drug
+      WHERE drug_id = $1`,
+      [drugId]
+    );
+
+    if(drug.rows.length === 0) {
+      return res.status(401).json("Drug does not exist");
+    }
 
     const response = await db.query(
       'SELECT * FROM drug_stock WHERE drug_stock_clinic_id = $1 AND drug_stock_drug_id = $2',
@@ -129,7 +169,8 @@ exports.findDrugLogByClinic = async (req, res) => {
     - (Number) drug_stock_clinic_id: The clinic ID the drug belongs to
 
   Returns: 
-    200: JSON drug stock data
+    201: JSON drug stock data
+    400: Clinic or Drug does not exist
     409: Batch ID already exists
     422: Errors in validating the drug stock
     500: Error on the server side
@@ -146,53 +187,53 @@ exports.addDrugStockToClinic = async (req, res) => {
   try{
     // Destructure body
     const { 
-      drug_batch_id, 
-      drug_expiry_date, 
-      drug_quantity,
-      drug_quantity_measure,
-      drug_concentration,
+      drug_batch_id,
       drug_stock_drug_id,
       drug_stock_clinic_id } = req.body;
 
     // Check if batch number exists
-    const drug = await db.query(
+    const drug_batch = await db.query(
       "SELECT * FROM drug_stock WHERE drug_batch_id = $1", 
       [drug_batch_id]
     );
 
     // throw error as batch already exists
-    if(drug.rows.length !== 0) {
-      return res.status(409).json("Drug with this batch ID is already available");
+    if(drug_batch.rows.length !== 0) {
+      return res.status(409).json("Cannot add stock. Drug with this batch ID is already available");
     }
 
-    // Add stock to DB
-    await db.query(
-      `INSERT INTO drug_stock(
-        drug_batch_id,
-        drug_expiry_date,
-        drug_quantity,
-        drug_quantity_measure,
-        drug_quantity_remaining,
-        drug_concentration,
-        drug_stock_drug_id,
-        drug_stock_clinic_id
-      )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
-      RETURNING *`,
-      [
-        drug_batch_id, 
-        drug_expiry_date, 
-        drug_quantity, 
-        drug_quantity_measure,
-        drug_quantity,
-        drug_concentration, 
-        drug_stock_drug_id, 
-        drug_stock_clinic_id
-      ]).then(res => body = res.rows[0])
+    // Check if drug exists
+    const drug = await db.query(
+      "SELECT * FROM drug WHERE drug_id = $1", 
+      [drug_stock_drug_id]
+    );
+
+    // throw error as drug does not exist
+    if(drug.rows.length === 0) {
+      return res.status(400).json("Cannot add stock to drug. Drug does not exist");
+    }
+
+    // Check if clinic exists
+    const clinic = await db.query(
+      "SELECT * FROM clinic WHERE clinic_id = $1", 
+      [drug_stock_clinic_id]
+    );
+
+    // throw error as drug does not exist
+    if(clinic.rows.length === 0) {
+      return res.status(400).json("Cannot add stock to drug. Clinic does not exist");
+    }
+
+    // Add drug stock to DB
+    const response = await this.addDrugStock(req.body);
+
+    if(response === 500) {
+      res.status(500).json("Server error adding drug to stock. Please try again")
+    }
 
     res.status(201).send({
       message: "Drug Stock added successfully",
-      body
+      body: response
     });
   } catch (err) {
     console.error(err.message);
@@ -363,3 +404,36 @@ exports.administerDrug = async (req, res) => {
     res.status(500).json("Server error");
   }
 };
+
+exports.addDrugStock = async (stock) => {
+  // Add stock to DB
+  const response = await db.query(
+  `INSERT INTO drug_stock(
+    drug_batch_id,
+    drug_expiry_date,
+    drug_quantity,
+    drug_quantity_measure,
+    drug_quantity_remaining,
+    drug_concentration,
+    drug_stock_drug_id,
+    drug_stock_clinic_id
+  )
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+  RETURNING *`,
+  [
+    stock.drug_batch_id, 
+    stock.drug_expiry_date, 
+    stock.drug_quantity, 
+    stock.drug_quantity_measure,
+    stock.drug_quantity,
+    stock.drug_concentration, 
+    stock.drug_stock_drug_id, 
+    stock.drug_stock_clinic_id
+  ])
+
+  if(response.rows.length === 0) {
+    return 500;
+  }
+
+  return response.rows[0];
+}
