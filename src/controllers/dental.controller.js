@@ -11,17 +11,35 @@ const { validationResult } = require('express-validator')
 
   Returns: 
     200: JSON dental data
+    400: Incorrect patient ID 
     500: Error on the server side
 */
 exports.findDentalByPatientId = async (req, res) => {
   try{
     const patient_id = parseInt(req.params.id);
 
+    // Check patient exists
+    const patient = await db.query(
+      `SELECT patient_id FROM patient
+      WHERE patient_id = $1`,
+      [patient_id]
+    );
+
+    if(patient.rows.length === 0) {
+      return res.status(400).json("No patient found with ID supplied")
+    }
+
+    // Retrieve dental
     const response = await db.query(
       `SELECT * FROM tooth 
       WHERE tooth_patient_id = $1
       ORDER BY tooth_id ASC`,
       [patient_id]);
+
+    // if response returns nothing then there was an error
+    if(response.rowCount.length === 0) {
+      return res.status(500).json("Server error retrieving dental. Please try again")
+    }
 
     res.status(200).send(response.rows);
   } catch (err) {
@@ -36,7 +54,9 @@ exports.findDentalByPatientId = async (req, res) => {
     - (Number) id: Patient ID to add a dental for
 
   Returns: 
-    200: JSON dental data
+    201: JSON dental data
+    400: Patient does not exist
+    403: Patient is inactive or species cannot have a dental
     409: Dental already exists or patient inactive
     500: Error on the server side
 */
@@ -61,11 +81,16 @@ exports.addDental = async (req, res) => {
       return res.status(409).json("Dental for this patient is already available");
     }
 
-    // Check if patient is deactivated
+    // Check if patient exists and is deactivated
     const patient = await db.query(
       "SELECT patient_name, patient_inactive FROM patient WHERE patient_id = $1", 
       [patient_id]
     );
+
+    // Send error as patient does not exist
+    if(patient.rows.length === 0) {
+      return res.status(400).json("Patient with supplied ID does not exist");
+    }
 
     // Send error as patient is inactive
     if(patient.rows[0].patient_inactive === true) {
@@ -94,10 +119,11 @@ exports.addDental = async (req, res) => {
       bottom_right_end = 407;
       bottom_left_end = 307;
     } else {
-      return res.status(409).json(`Dental not available for ${species.rows[0].patient_species}`);
+      return res.status(403).json(`Dental not available for ${species.rows[0].patient_species}`);
     }
 
     // Add dental data to DB
+    // Loop through each section of teeth
     for(let i = 0; i < 4; i++) {
       let tooth_id;
       let pos;
@@ -123,35 +149,30 @@ exports.addDental = async (req, res) => {
           pos = 0;
       }
 
+      // Loop through a section of teeth and add them to DB
       for(tooth_id; tooth_id <= pos; tooth_id++) {
-        await db.query(
-          `INSERT INTO tooth(
-            tooth_id,
-            tooth_patient_id,
-            tooth_problem,
-            tooth_note
-          )
-          VALUES ($1, $2, $3, $4) 
-          RETURNING *`,
-          [
-            tooth_id, 
-            patient_id, 
-            "Healthy", 
-            null
-          ]);
+        const response = await this.insertTooth(tooth_id, patient_id);
+
+        if(response === 500) {
+          return res.status(500).json("Server error creating dental. Please try again");
+        }
       }
     }
 
-    await db.query(
+    // Retrieve dental from DB
+    const response = await db.query(
       `SELECT * FROM tooth
       WHERE tooth_patient_id = $1`,
-      [
-        patient_id
-      ]).then(res => body = res.rows)
+      [patient_id]
+    )
+
+    if(response.rows.length === 0) {
+      return res.status(500).json("Error retrieving dental from server. Please try again")
+    }
 
     res.status(201).send({
       message: "Dental added successfully",
-      body
+      body: response.rows
     });
   } catch (err) {
     console.error(err.message);
@@ -160,97 +181,17 @@ exports.addDental = async (req, res) => {
 };
 
 /*
-  POST: /dentals/update/:id Update a dental 
-  Request params:
-    - (Number) id: ID of the patient that the dental log must be updated for
+  PUT: /dentals/tooth Update a tooth
   Request body:
-    - (Arr) teeth: JSON array that holds all tooth data in objects
+    - (Object) tooth: JSON obj that holds tooth data 
 
   Returns: 
-    200: JSON dental data
+    201: JSON new tooth data
+    400: Patient does not exist
     403: Patient is inactive
     500: Error on the server side
 */
-exports.updateDental = async (req, res) => {
-  try{
-    const patient_id = parseInt(req.params.id);
-    const teeth = req.body.teeth;
-
-    // Check if patient has dental
-    const dental = await db.query(
-      "SELECT tooth_id FROM tooth WHERE tooth_patient_id = $1", 
-      [patient_id]
-    );
-
-    // Send error as patient does not have dental to update
-    if(dental.rows.length === 0) {
-      return res.status(403).json(
-        `Patient does not have a dental record. 
-        Please add a dental before updating the dental record.`
-      );
-    }
-
-    // Check if patient is deactivated
-    const patient = await db.query(
-      "SELECT patient_name, patient_inactive FROM patient WHERE patient_id = $1", 
-      [patient_id]
-    );
-
-    // Send error as patient is inactive
-    if(patient.rows[0].patient_inactive === true) {
-      const patient_name = patient.rows[0].patient_name
-      return res.status(403).json(
-        `Patient (${patient_name}) is inactive. 
-        Please reactivate ${patient_name} before updating dental record`
-      );
-    }
-
-    // Loop through each tooth and update the values 
-    await teeth.forEach(tooth => {
-      db.query(
-        `UPDATE tooth
-        SET tooth_problem = $1,
-        tooth_note = $2
-        WHERE tooth_id = $3 AND tooth_patient_id = $4`,
-        [
-          tooth.tooth_problem, 
-          tooth.tooth_note,
-          tooth.tooth_id,
-          patient_id
-        ])
-    });
-
-    // Retrieve all updated values
-    await db.query(
-      `SELECT * FROM tooth
-      WHERE tooth_patient_id = $1
-      ORDER BY tooth_id ASC`,
-      [patient_id])
-      .then(res => {
-        body = res.rows
-      })
-  
-    res.status(200).send({ 
-      message: "Dental updated successfully",
-      body
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json("Server error");
-  }
-};
-
-/*
-  POST: /dentals/tooth Update a tooth
-  Request body:
-    - (Object) teeth: JSON obj that holds all tooth data 
-
-  Returns: 
-    200: JSON new tooth data
-    403: Patient is inactive
-    500: Error on the server side
-*/
-exports.updateTooth = async (req, res) => {
+exports.updateToothByToothIdAndPatientId = async (req, res) => {
   const errors = validationResult(req);
 
   // If errors exist during validation pass them to the user
@@ -262,8 +203,7 @@ exports.updateTooth = async (req, res) => {
   try{
     const tooth_id = parseInt(req.params.tooth_id);
     const patient_id = parseInt(req.params.patient_id);
-    const tooth_note = req.body.tooth_note;
-    const tooth_problem = req.body.tooth_problem;
+    const { tooth_note, tooth_problem } = req.body;
 
     // Check if patient is deactivated or does not exist
     const patient = await db.query(
@@ -273,7 +213,7 @@ exports.updateTooth = async (req, res) => {
 
     // If patient does not exist send error
     if(patient.rows.length === 0) {
-      return res.status(403).json(`Patient does not exist`);
+      return res.status(400).json(`Patient does not exist`);
     }
 
     // Send error as patient is inactive
@@ -295,31 +235,103 @@ exports.updateTooth = async (req, res) => {
 
     // If tooth does not exist send error
     if(tooth.rows.length === 0) {
-      return res.status(403).json(`Tooth does not exist`);
+      return res.status(400).json(`Tooth does not exist`);
     }
 
-    // update the tooth values 
-    await db.query(
-      `UPDATE tooth
-      SET tooth_problem = $1,
-      tooth_note = $2
-      WHERE tooth_id = $3 AND tooth_patient_id = $4
-      RETURNING *`,
-      [
-        tooth_problem, 
-        tooth_note,
-        tooth_id,
-        patient_id
-    ]).then(res => {
-      body = res.rows[0];
-    })
+    // Update the tooth in the DB
+    const response = await this.updateTooth(
+      tooth_id, 
+      patient_id, 
+      tooth_problem, 
+      tooth_note
+    );
+
+    // Send error as tooth was not updated
+    if(response === 500) {
+      return res.status(500).json("Server error updating tooth. Please try again");
+    }
   
-    res.status(200).send({ 
+    res.status(201).send({ 
       message: "Tooth updated successfully",
-      body
+      body: response
     });
   } catch (err) {
     console.error(err);
     res.status(500).json("Server error");
   }
 };
+
+/*
+  Insert a tooth into the DB
+    - (Integer) tooth_id: ID of the tooth to enter
+    - (Integer) patient_id: ID of the patient the tooth will belong to
+
+  Returns: 
+    (Success) Integer: 201
+    (Error) Integer: 500
+*/
+exports.insertTooth = async (tooth_id, patient_id) => {
+  try {
+    const response = await db.query(
+      `INSERT INTO tooth(
+        tooth_id,
+        tooth_patient_id,
+        tooth_problem,
+        tooth_note
+      )
+      VALUES ($1, $2, $3, $4) 
+      RETURNING *`,[
+        tooth_id, 
+        patient_id, 
+        "Healthy", 
+        null ]);
+    
+    if(response.rows.length === 0) {
+      return 500;
+    }
+    
+    return 201;
+  } catch(err) {
+    console.error(err);
+    return 500
+  }
+}
+
+/*
+  Update a tooth in the DB
+    - (Integer) tooth_id: ID of the tooth to enter
+    - (Integer) patient_id: ID of the patient the tooth will belong to
+    - (String) problem: The problem with the tooth
+    - (String) notes: Any notes on the tooth
+
+  Returns: 
+    (Success) Object: The updated tooth object
+    (Error) Integer: 500
+*/
+exports.updateTooth = async (tooth_id, patient_id, problem, notes) => {
+  try {
+    // update the tooth values 
+    const response = await db.query(
+      `UPDATE tooth
+      SET tooth_problem = $1,
+      tooth_note = $2
+      WHERE tooth_id = $3 AND tooth_patient_id = $4
+      RETURNING *`,
+      [
+        problem, 
+        notes,
+        tooth_id,
+        patient_id
+    ]);
+    
+    // Return error as update failed
+    if(response.rows.length === 0) {
+      return 500;
+    }
+    
+    return response.rows[0];
+  } catch(err) {
+    console.error(err);
+    return 500
+  }
+}

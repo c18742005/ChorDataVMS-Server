@@ -147,6 +147,92 @@ CREATE TABLE tooth(
     PRIMARY KEY(tooth_id, tooth_patient_id)
 );
 
+-- INSERT EXAMPLE DENTAL
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (101, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (102, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (103, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (104, 1, 'Furcation', null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (105, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (106, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (107, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (108, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (109, 1, 'Missing', 'Not present on inspection');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (110, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (201, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (202, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (203, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (204, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (205, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (206, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (207, 1, 'Extracted', 'Tooths badly worn had to be extracted');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (208, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (209, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (210, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (301, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (302, 1, 'Wear', 'Signs of wear');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (303, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (304, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (305, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (306, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (307, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (308, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (309, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (310, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (311, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (401, 1, 'Fracture', 'Small fracture at top of tooth');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (402, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (403, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (404, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (405, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (406, 1, 'Recession', 'Signs of recession');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (407, 1, 'Gingivitis', null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (408, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (409, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (410, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (411, 1, null, null);
+
 CREATE TABLE cremation(
     cremation_id SERIAL PRIMARY KEY,
     cremation_patient_id INTEGER NOT NULL,
@@ -317,6 +403,177 @@ INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quan
 VALUES ('803', '2026-11-24', 10.00, 'ml', 10.00, '10mg/ml', 8, 2);
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
 VALUES ('804', '2025-09-12', 10.00, 'ml', 10.00, '10mg/ml', 8, 2);
+
+-- INSERT EXAMPLE DENTALS
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (101, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (102, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (103, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (104, 1, 'Furcation', null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (105, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (106, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (107, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (108, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (109, 1, 'Missing', 'Not present on inspection');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (110, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (201, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (202, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (203, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (204, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (205, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (206, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (207, 1, 'Extracted', 'Tooths badly worn had to be extracted');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (208, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (209, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (210, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (301, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (302, 1, 'Wear', 'Signs of wear');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (303, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (304, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (305, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (306, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (307, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (308, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (309, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (310, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (311, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (401, 1, 'Fracture', 'Small fracture at top of tooth');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (402, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (403, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (404, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (405, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (406, 1, 'Recession', 'Signs of recession');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (407, 1, 'Gingivitis', null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (408, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (409, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (410, 1, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (411, 1, null, null);
+
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (101, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (102, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (103, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (104, 5, 'Furcation', null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (105, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (106, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (107, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (108, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (109, 5, 'Missing', 'Not present on inspection');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (110, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (201, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (202, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (203, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (204, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (205, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (206, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (207, 5, 'Extracted', 'Tooths badly worn had to be extracted');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (208, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (209, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (210, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (301, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (302, 5, 'Wear', 'Signs of wear');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (303, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (304, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (305, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (306, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (307, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (308, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (309, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (310, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (311, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (401, 5, 'Fracture', 'Small fracture at top of tooth');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (402, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (403, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (404, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (405, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (406, 5, 'Recession', 'Signs of recession');
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (407, 5, 'Gingivitis', null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (408, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (409, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (410, 5, null, null);
+INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
+VALUES (411, 5, null, null);
 
 -- INSERT EXAMPLES INTO CREMATION
 INSERT INTO cremation(cremation_patient_id, cremation_clinic_id, cremation_form, cremation_owner_contacted, cremation_date_collected, cremation_date_ashes_returned_practice, cremation_date_ashes_returned_owner) 

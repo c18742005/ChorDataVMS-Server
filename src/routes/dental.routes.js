@@ -13,13 +13,10 @@ router.get('/dentals/:id', authorisation, dentalController.findDentalByPatientId
 router.post('/dentals/:id', authorisation, dentalController.addDental);
 
 // Route to update a tooth
-router.post(
+router.put(
   '/dentals/tooth/:tooth_id/patient/:patient_id', 
   authorisation, 
   dentalValidator.validate('validateToothForm'), 
-  dentalController.updateTooth);
-
-// Route to update a dental by the patients ID
-router.post('/dentals/update/:id', authorisation, dentalController.updateDental);
+  dentalController.updateToothByToothIdAndPatientId);
 
 module.exports = router;
