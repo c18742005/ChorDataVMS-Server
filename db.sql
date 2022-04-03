@@ -3,6 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 DROP TABLE IF EXISTS cremation;
 DROP TABLE IF EXISTS tooth;
+DROP TABLE IF EXISTS dental;
 DROP TABLE IF EXISTS xray;
 DROP TABLE IF EXISTS drug_log;
 DROP TABLE IF EXISTS drug_stock;
@@ -148,6 +149,16 @@ CREATE TABLE tooth(
     PRIMARY KEY(tooth_id, tooth_patient_id)
 );
 
+CREATE TABLE dental(
+    dental_id SERIAL PRIMARY KEY,
+    dental_patient_id INTEGER,
+    dental_date_updated DATE,
+    CONSTRAINT fk_dental_patient
+        FOREIGN KEY (dental_patient_id)
+            REFERENCES patient(patient_id)
+            ON DELETE CASCADE
+);
+
 CREATE TABLE cremation(
     cremation_id SERIAL PRIMARY KEY,
     cremation_patient_id INTEGER NOT NULL,
@@ -176,7 +187,7 @@ VALUES ('292a485f-a56a-4938-8f1a-bbbbbbbbbbb2', 'Country Choice', 'Sarsfield Str
 INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id)
 VALUES ('vet.user', '$2a$10$NxvQrmH4kFNBuGwbC7m1Cus/m21tv3f3CjJMr/KnvEU3jcozWgJoi', 'Vet', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id)
-VALUES ('ACA.user', '$2a$10$Pdln/9Wv7I8ZgcDrrlqrqOtbjMjL5.YMtx9K4L2RZBRgj680V9s2K', 'ACA', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
+VALUES ('nurse.user', '$2a$10$D7a4.onIG5iPlTYB4yABxeQLvjbUZmdk8J3sPoDku3ltQpsGij2mi', 'Nurse', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 
 -- INSERT EXAMPLE CLIENTS
 INSERT INTO client(
@@ -385,6 +396,12 @@ INSERT INTO xray(xray_date, xray_image_quality, xray_kV, xray_mAs, xray_position
 VALUES ('2021-08-14', 'Good', 1.9, 2.1, 'Lateral Decubitus', 3, 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO xray(xray_date, xray_image_quality, xray_kV, xray_mAs, xray_position, xray_patient_id, xray_staff_id, xray_clinic_id) 
 VALUES ('2021-02-16', 'Overexposed', 2.1, 2.3, 'Supinated', 2, 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
+
+-- INSERT DENTAL EXAMPLES
+INSERT INTO dental(dental_patient_id, dental_date_updated) 
+VALUES (1, '2022-01-15');
+INSERT INTO dental(dental_patient_id, dental_date_updated) 
+VALUES (5, '2022-02-12');
 
 -- INSERT EXAMPLE DENTALS
 INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 

@@ -159,6 +159,12 @@ exports.addDental = async (req, res) => {
       }
     }
 
+    const insertDental = this.insertDental(patient_id);
+
+    if(insertDental === 500) {
+      return res.status(500).json("Error adding dental to DB. Please try again");
+    }
+
     // Retrieve dental from DB
     const response = await db.query(
       `SELECT * FROM tooth
@@ -167,7 +173,7 @@ exports.addDental = async (req, res) => {
     )
 
     if(response.rows.length === 0) {
-      return res.status(500).json("Error retrieving dental from server. Please try again")
+      return res.status(500).json("Error retrieving dental from server. Please try again");
     }
 
     res.status(201).send({
@@ -328,8 +334,94 @@ exports.updateTooth = async (tooth_id, patient_id, problem, notes) => {
     if(response.rows.length === 0) {
       return 500;
     }
+
+    const updateDental = this.updateDental(patient_id);
+
+    if(updateDental === 500) {
+      return 500;
+    }
     
     return response.rows[0];
+  } catch(err) {
+    console.error(err);
+    return 500
+  }
+}
+
+/*
+  Insert a dental into the DB
+    - (Integer) patient_id: ID of the patient the dental will belong to
+
+  Returns: 
+    (Success) Integer: 201
+    (Error) Integer: 500
+*/
+exports.insertDental = async (patient_id) => {
+  try {
+    // Get current date
+    const date_obj = new Date();
+    const date = ("0" + date_obj.getDate()).slice(-2);
+    const month = ("0" + (date_obj.getMonth() + 1)).slice(-2);
+    const year = date_obj.getFullYear();
+    const date_string = `${year}-${month}-${date}`;
+
+    // insert the tooth values 
+    const response = await db.query(
+      `INSERT INTO dental(
+        dental_patient_id,
+        dental_date_updated
+      )
+      VALUES ($1, $2) 
+      RETURNING *`,[
+        patient_id, 
+        date_string
+      ]);
+    
+    // Return error as insert failed
+    if(response.rows.length === 0) {
+      return 500;
+    }
+    
+    return 201;
+  } catch(err) {
+    console.error(err);
+    return 500
+  }
+}
+
+/*
+  Update a dental in the DB
+    - (Integer) patient_id: ID of the patient the dental belongs to
+
+  Returns: 
+    (Success) Integer: 201
+    (Error) Integer: 500
+*/
+exports.updateDental = async (patient_id) => {
+  try {
+    // Get current date
+    const date_obj = new Date();
+    const date = ("0" + date_obj.getDate()).slice(-2);
+    const month = ("0" + (date_obj.getMonth() + 1)).slice(-2);
+    const year = date_obj.getFullYear();
+    const date_string = `${year}-${month}-${date}`;
+
+    // insert the tooth values 
+    const response = await db.query(
+      `UPDATE dental
+      SET dental_date_updated = $1
+      WHERE dental_patient_id = $2
+      RETURNING *`, [
+        date_string,
+        patient_id
+      ]);
+    
+    // Return error as update failed
+    if(response.rows.length === 0) {
+      return 500;
+    }
+    
+    return 201;
   } catch(err) {
     console.error(err);
     return 500

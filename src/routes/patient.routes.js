@@ -26,6 +26,9 @@ router.get('/patients/clinic/:id', authorisation, patientController.findPatientB
 // Route to get species patients by clinicID 
 router.get('/patients/species/:species/clinic/:id', authorisation, patientController.findSpeciesByClinicId);
 
+// Route to get a patients history by patientID 
+router.get('/patients/history/:id', authorisation, patientController.findPatientHistoryById);
+
 // Route to update a patient by their ID 
 router.put(
   '/patients/:id', 

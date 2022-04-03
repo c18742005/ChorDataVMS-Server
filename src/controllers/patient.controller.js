@@ -171,6 +171,41 @@ exports.findSpeciesByClinicId = async (req, res) => {
 };
 
 /*
+  GET: /patients/history/:id Retrieve a patients history by their ID
+  Request params:
+    - (Number) id: ID of patient
+
+  Returns: 
+    200: JSON patient data
+    400: No patient history found with ID supplied
+    500: Error on the server side
+*/
+exports.findPatientHistoryById = async (req, res) => {
+  try {
+    const patientId = parseInt(req.params.id);
+
+    // Retrieve patients data from DB
+    const response = await db.query(`
+      SELECT 'Drug Administered' AS vet_procedure, drug_date_administered AS date_completed 
+      FROM drug_log
+      WHERE drug_patient_id = $1
+      UNION 
+      SELECT 'X-Ray' AS vet_procedure, xray_date AS date_completed FROM xray
+      WHERE xray_patient_id = $2
+      UNION 
+      SELECT 'Dental' AS vet_procedure, dental_date_updated AS date_completed FROM dental
+      WHERE dental_patient_id = $3
+      ORDER BY date_completed DESC;`,
+      [patientId, patientId, patientId]);
+
+    res.status(200).send(response.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Server error");
+  } 
+};
+
+/*
   POST: /patients Add patient to a clinic
   Request body:
     - (String) patient_name: Name of patient
