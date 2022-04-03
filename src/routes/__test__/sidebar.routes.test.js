@@ -6,7 +6,7 @@ describe("GET /api/sidebar", () => {
     test("Should respond with a 200 status code", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       

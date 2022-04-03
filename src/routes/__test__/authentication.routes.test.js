@@ -8,7 +8,7 @@ describe("POST /api/register", () => {
       const bodyData = {
           username: "example.user",
           password: "P@ssword1",
-          clinic_id: 1,
+          clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1',
           role: "Vet"
       }
 
@@ -16,7 +16,7 @@ describe("POST /api/register", () => {
         staff_member_id: 100,
         staff_username: "example.user",
         staff_password: "sjkfkJHGKJDJKHA",
-        staff_clinic_id: 1,
+        staff_clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1',
         staff_role: "Vet"
       }
 
@@ -37,23 +37,23 @@ describe("POST /api/register", () => {
         {},
         {
           password: "P@ssword1",
-          clinic_id: 1,
+          clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1',
           role: "Vet"
         },
         {
           username: "exampleuser",
-          clinic_id: 1,
-          role: "Vet"
-        },
-        {
-          username: "exampleuser",
-          password: "P@ssword1",
+          clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1',
           role: "Vet"
         },
         {
           username: "exampleuser",
           password: "P@ssword1",
-          clinic_id: 1
+          role: "Vet"
+        },
+        {
+          username: "exampleuser",
+          password: "P@ssword1",
+          clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1'
         }
       ];
 
@@ -74,7 +74,7 @@ describe("POST /api/register", () => {
       const response = await request(app).post("/api/register").send({
         username: "£xampleU$er",
         password: "P@ssword1",
-        clinic_id: 1,
+        clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1',
         role: "Vet"
       })
 
@@ -85,7 +85,7 @@ describe("POST /api/register", () => {
       const response = await request(app).post("/api/register").send({
         username: "exampleuser",
         password: "password",
-        clinic_id: 1,
+        clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1',
         role: "Vet"
       })
 
@@ -120,7 +120,7 @@ describe("POST /api/login", () => {
   describe("Given correct username and password ", () => {
     test("Should respond with a 200 status code", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
 
@@ -130,7 +130,7 @@ describe("POST /api/login", () => {
 
     test("Should specify JSON in content type header", async () => {
       const response = await request(app).post("/api/login").send({
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       })
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -138,7 +138,7 @@ describe("POST /api/login", () => {
 
     test("Should send token on success", async () => {
       const response = await request(app).post("/api/login").send({
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       })
       expect(response.body.token).toBeDefined()
@@ -146,7 +146,7 @@ describe("POST /api/login", () => {
 
     test("Should send staff_info on success", async () => {
       const response = await request(app).post("/api/login").send({
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       })
       expect(response.body.staff_info).toBeDefined()
@@ -186,7 +186,7 @@ describe("POST /api/login", () => {
           password: "password"
         },
         {
-          username: "test.user",
+          username: "vet.user",
           password: "password"
         }
       ];

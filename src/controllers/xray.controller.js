@@ -7,7 +7,7 @@ const { validationResult } = require('express-validator')
 /*
   GET: /xrays/clinic/:id Retrieve all xrays for a clinic by their clinic ID
   Request params:
-    - (Number) id: Clinic ID
+    - (String) id: Clinic ID
 
   Returns: 
     200: JSON xray data
@@ -15,7 +15,7 @@ const { validationResult } = require('express-validator')
 */
 exports.findXraysByClinicId = async (req, res) => {
   try{
-    const clinicId = parseInt(req.params.id);
+    const clinicId = req.params.id;
 
     const response = await db.query(
       `SELECT 
@@ -93,7 +93,7 @@ exports.findXraysByPatientId = async (req, res) => {
     - (String) xray_position: Position xray is taken in
     -  (Number) xray_patient_id: ID of patient to be x-rayed
     -  (Number) xray_staff_id: ID of staff member who took the x-ray
-    - (Number) xray_clinic_id: ID of clinic x-ray belongs to
+    - (String) xray_clinic_id: ID of clinic x-ray belongs to
 
   Returns: 
     201: JSON xray data

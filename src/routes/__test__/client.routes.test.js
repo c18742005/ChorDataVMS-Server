@@ -31,7 +31,7 @@ describe("POST /api/clients", () => {
       jest.spyOn(ClientController, "insertClient").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -74,7 +74,7 @@ describe("POST /api/clients", () => {
       jest.spyOn(ClientController, "insertClient").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
 
@@ -97,7 +97,7 @@ describe("POST /api/clients", () => {
       }
   
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -117,7 +117,7 @@ describe("GET /api/clients/:id", () => {
     test("Should respond with a 200 status code", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -135,7 +135,7 @@ describe("GET /api/clients/:id", () => {
     test("Should respond with a 401 status code", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -166,7 +166,7 @@ describe("PUT /api/clients/:id", () => {
       jest.spyOn(ClientController, "updateClient").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -195,7 +195,7 @@ describe("PUT /api/clients/:id", () => {
       jest.spyOn(ClientController, "updateClient").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -224,7 +224,7 @@ describe("PUT /api/clients/:id", () => {
       jest.spyOn(ClientController, "updateClient").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -246,7 +246,7 @@ describe("PUT /api/clients/deactivate/:id", () => {
       jest.spyOn(ClientController, "setPatientsInactive").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -266,7 +266,7 @@ describe("PUT /api/clients/deactivate/:id", () => {
       jest.spyOn(ClientController, "setPatientsInactive").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -286,7 +286,7 @@ describe("PUT /api/clients/deactivate/:id", () => {
       jest.spyOn(ClientController, "setPatientsInactive").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -308,7 +308,7 @@ describe("PUT /api/clients/reactivate/:id", () => {
       jest.spyOn(ClientController, "setPatientsActive").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -328,7 +328,7 @@ describe("PUT /api/clients/reactivate/:id", () => {
       jest.spyOn(ClientController, "setPatientsActive").mockReturnValueOnce(200)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       

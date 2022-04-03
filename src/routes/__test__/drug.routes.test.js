@@ -7,7 +7,7 @@ describe("GET /api/drugs", () => {
     test("Should respond with a 200 status code and return drugs", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -37,13 +37,13 @@ describe("GET /api/drugs/:id", () => {
     test("Should respond with a 200 status code and return drugs", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/drugs/1").set("token", token)
+      const response = await request(app).get("/api/drugs/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -53,7 +53,7 @@ describe("GET /api/drugs/:id", () => {
 
   describe("When user is not authenticated", () => {
     test("Should respond with a 403 status code and appropriate message", async () => {
-      const response = await request(app).get("/api/drugs/1")
+      const response = await request(app).get("/api/drugs/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
 
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -65,13 +65,13 @@ describe("GET /api/drugs/:id", () => {
     test("Should respond with a 401 status code and return appropriate message", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/drugs/-1").set("token", token)
+      const response = await request(app).get("/api/drugs/292a485f-a56a-4938-8f1a-bbbbbbbbbbb9").set("token", token)
 
       expect(response.statusCode).toBe(401)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -85,13 +85,13 @@ describe("GET /api/drugs/:drugid/:clinicid", () => {
     test("Should respond with a 200 status code and return drugs", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/drugs/1/1").set("token", token)
+      const response = await request(app).get("/api/drugs/1/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -101,7 +101,7 @@ describe("GET /api/drugs/:drugid/:clinicid", () => {
 
   describe("When user is not authenticated", () => {
     test("Should respond with a 403 status code and appropriate message", async () => {
-      const response = await request(app).get("/api/drugs/1/1")
+      const response = await request(app).get("/api/drugs/1/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
 
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -113,13 +113,13 @@ describe("GET /api/drugs/:drugid/:clinicid", () => {
     test("Should respond with a 401 status code and return appropriate message when drugID is wrong", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/drugs/-1/1").set("token", token)
+      const response = await request(app).get("/api/drugs/-1/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(401)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -130,13 +130,13 @@ describe("GET /api/drugs/:drugid/:clinicid", () => {
   test("Should respond with a 401 status code and return appropriate message when clinicID is wrong", async () => {
 
     const staffBody =  {
-      username: "test.user",
+      username: "vet.user",
       password: "P@ssword1"
     }
     
     const res = await request(app).post("/api/login").send(staffBody)
     const token = res.body.token
-    const response = await request(app).get("/api/drugs/1/-1").set("token", token)
+    const response = await request(app).get("/api/drugs/1/292a485f-a56a-4938-8f1a-bbbbbbbbbbb9").set("token", token)
 
     expect(response.statusCode).toBe(401)
     expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -155,7 +155,7 @@ describe("POST /api/drugs", () => {
         drug_quantity_remaining: '10',
         drug_concentration: '2 mg/ml',
         drug_stock_drug_id: 1,
-        drug_stock_clinic_id: 1
+        drug_stock_clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1'
       }
 
       const userPayload = {
@@ -165,13 +165,13 @@ describe("POST /api/drugs", () => {
         drug_quantity_measure: 'ml',
         drug_concentration: '2 mg/ml',
         drug_stock_drug_id: 1,
-        drug_stock_clinic_id: 1
+        drug_stock_clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1'
       }
 
       jest.spyOn(DrugController, "addDrugStock").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -209,7 +209,7 @@ describe("POST /api/drugs", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -226,7 +226,7 @@ describe("POST /api/drugs", () => {
   describe("When info is missing", () => {
     test("Should respond with a 422 status code", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -250,13 +250,13 @@ describe("POST /api/drugs", () => {
         drug_quantity_remaining: '10',
         drug_concentration: '2 mg/ml',
         drug_stock_drug_id: 1,
-        drug_stock_clinic_id: 1
+        drug_stock_clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1'
       }
 
       jest.spyOn(DrugController, "addDrugStock").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -280,13 +280,13 @@ describe("POST /api/drugs", () => {
         drug_quantity_remaining: '10',
         drug_concentration: '2 mg/ml',
         drug_stock_drug_id: 1,
-        drug_stock_clinic_id: -1
+        drug_stock_clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb9'
       }
 
       jest.spyOn(DrugController, "addDrugStock").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -310,13 +310,13 @@ describe("POST /api/drugs", () => {
         drug_quantity_remaining: '10',
         drug_concentration: '2 mg/ml',
         drug_stock_drug_id: -1,
-        drug_stock_clinic_id: 1
+        drug_stock_clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1'
       }
 
       jest.spyOn(DrugController, "addDrugStock").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -340,13 +340,13 @@ describe("POST /api/drugs", () => {
         drug_quantity_remaining: '10',
         drug_concentration: '2 mg/ml',
         drug_stock_drug_id: 1,
-        drug_stock_clinic_id: 1
+        drug_stock_clinic_id: '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1'
       }
 
       jest.spyOn(DrugController, "addDrugStock").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -386,7 +386,7 @@ describe("POST /api/drugs/log", () => {
       jest.spyOn(DrugController, "addDrugLog").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -423,7 +423,7 @@ describe("POST /api/drugs/log", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -440,7 +440,7 @@ describe("POST /api/drugs/log", () => {
   describe("When info is missing", () => {
     test("Should respond with a 422 status code", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -468,7 +468,7 @@ describe("POST /api/drugs/log", () => {
       jest.spyOn(DrugController, "addDrugLog").mockReturnValueOnce(500);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -496,7 +496,7 @@ describe("POST /api/drugs/log", () => {
       jest.spyOn(DrugController, "addDrugLog").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -524,7 +524,7 @@ describe("POST /api/drugs/log", () => {
       jest.spyOn(DrugController, "addDrugLog").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -552,7 +552,7 @@ describe("POST /api/drugs/log", () => {
       jest.spyOn(DrugController, "addDrugLog").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -580,7 +580,7 @@ describe("POST /api/drugs/log", () => {
       jest.spyOn(DrugController, "addDrugLog").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -608,7 +608,7 @@ describe("POST /api/drugs/log", () => {
       jest.spyOn(DrugController, "addDrugLog").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       

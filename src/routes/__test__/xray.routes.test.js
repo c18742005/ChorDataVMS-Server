@@ -7,13 +7,13 @@ describe("GET /api/xrays/clinic/:id", () => {
     test("Should respond with a 200 status code", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/xrays/clinic/1").set("token", token)
+      const response = await request(app).get("/api/xrays/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -23,7 +23,7 @@ describe("GET /api/xrays/clinic/:id", () => {
 
   describe("When user is not authenticated", () => {
     test("Should respond with a 403 status code", async () => {
-      const response = await request(app).get("/api/xrays/clinic/1")
+      const response = await request(app).get("/api/xrays/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
 
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -37,7 +37,7 @@ describe("GET /api/xrays/patient/:id", () => {
     test("Should respond with a 200 status code", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -74,7 +74,7 @@ describe("POST /api/xrays", () => {
         xray_patient_id: 1,
         patient_name: 'Scout', 
         patient_microchip: '123451234512345',
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       const userPayload = {
@@ -87,13 +87,13 @@ describe("POST /api/xrays", () => {
         xray_patient_id: 1,
         patient_name: 'Scout', 
         patient_microchip: '123451234512345',
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       jest.spyOn(XrayController, "insertXray").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -129,11 +129,11 @@ describe("POST /api/xrays", () => {
         xray_patient_id: 'One',
         patient_name: 'Scout', 
         patient_microchip: 123,
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -150,7 +150,7 @@ describe("POST /api/xrays", () => {
   describe("When info is missing", () => {
     test("Should respond with a 422 status code", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -175,13 +175,13 @@ describe("POST /api/xrays", () => {
         xray_patient_id: 3,
         patient_name: 'Bean', 
         patient_microchip: '192834756675849',
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       jest.spyOn(XrayController, "insertXray").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -208,7 +208,7 @@ describe("PUT /api/xrays/:id", () => {
         xray_patient_id: 1,
         patient_name: 'Scout', 
         patient_microchip: '123451234512345',
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       const userPayload = {
@@ -221,13 +221,13 @@ describe("PUT /api/xrays/:id", () => {
         xray_patient_id: 1,
         patient_name: 'Scout', 
         patient_microchip: '123451234512345',
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       jest.spyOn(XrayController, "updateXray").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -263,11 +263,11 @@ describe("PUT /api/xrays/:id", () => {
         xray_patient_id: 'One',
         patient_name: 'Scout', 
         patient_microchip: 123,
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -284,7 +284,7 @@ describe("PUT /api/xrays/:id", () => {
   describe("When info is missing", () => {
     test("Should respond with a 422 status code", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -309,13 +309,13 @@ describe("PUT /api/xrays/:id", () => {
         xray_patient_id: 3,
         patient_name: 'Bean', 
         patient_microchip: '192834756675849',
-        staff_username: 'test.user'
+        staff_username: 'vet.user'
       }
 
       jest.spyOn(XrayController, "insertXray").mockReturnValueOnce(500)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       

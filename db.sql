@@ -1,4 +1,5 @@
 CREATE DATABASE chordata;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 DROP TABLE IF EXISTS cremation;
 DROP TABLE IF EXISTS tooth;
@@ -12,7 +13,7 @@ DROP TABLE IF EXISTS client;
 DROP TABLE IF EXISTS clinic;
 
 CREATE TABLE clinic(
-    clinic_id SERIAL PRIMARY KEY,
+    clinic_id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     clinic_name VARCHAR(255) NOT NULL,
     clinic_address VARCHAR(255) NOT NULL
 );
@@ -22,7 +23,7 @@ CREATE TABLE staff_member(
     staff_username VARCHAR(255) UNIQUE NOT NULL,
     staff_password VARCHAR(255) NOT NULL,
     staff_role VARCHAR(255) NOT NULL,
-    staff_clinic_id INTEGER NOT NULL,
+    staff_clinic_id uuid NOT NULL,
     CONSTRAINT fk_clinic
         FOREIGN KEY (staff_clinic_id)
             REFERENCES clinic(clinic_id)
@@ -40,7 +41,7 @@ CREATE TABLE client(
     client_email VARCHAR(255) NOT NULL,
     client_inactive BOOLEAN NOT NULL,
     client_reason_inactive VARCHAR(255),
-    client_clinic_id INTEGER NOT NULL,
+    client_clinic_id uuid NOT NULL,
     CONSTRAINT fk_clinic_client
         FOREIGN KEY (client_clinic_id)
             REFERENCES clinic(clinic_id)
@@ -79,7 +80,7 @@ CREATE TABLE drug_stock(
     drug_quantity_remaining NUMERIC(6, 2) NOT NULL,
     drug_concentration VARCHAR(255) NOT NULL,
     drug_stock_drug_id INTEGER NOT NULL,
-    drug_stock_clinic_id INTEGER NOT NULL,
+    drug_stock_clinic_id uuid NOT NULL,
     CONSTRAINT fk_drug_drug_stock
         FOREIGN KEY (drug_stock_drug_id)
             REFERENCES drug(drug_id)
@@ -92,7 +93,7 @@ CREATE TABLE drug_stock(
 
 CREATE TABLE drug_log(
     drug_log_id SERIAL PRIMARY KEY,
-    drug_quantity_given VARCHAR(255) NOT NULL,
+    drug_quantity_given  NUMERIC(6, 2) NOT NULL,
     drug_date_administered DATE NOT NULL,
     drug_log_drug_stock_id VARCHAR(255) NOT NULL,
     drug_patient_id INTEGER NOT NULL,
@@ -120,7 +121,7 @@ CREATE TABLE xray(
     xray_position VARCHAR(255) NOT NULL,
     xray_patient_id INTEGER NOT NULL,
     xray_staff_id INTEGER NOT NULL,
-    xray_clinic_id INTEGER NOT NULL,
+    xray_clinic_id uuid NOT NULL,
     CONSTRAINT fk_xray_patient
         FOREIGN KEY (xray_patient_id)
             REFERENCES patient(patient_id)
@@ -147,96 +148,10 @@ CREATE TABLE tooth(
     PRIMARY KEY(tooth_id, tooth_patient_id)
 );
 
--- INSERT EXAMPLE DENTAL
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (101, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (102, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (103, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (104, 1, 'Furcation', null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (105, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (106, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (107, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (108, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (109, 1, 'Missing', 'Not present on inspection');
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (110, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (201, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (202, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (203, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (204, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (205, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (206, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (207, 1, 'Extracted', 'Tooths badly worn had to be extracted');
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (208, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (209, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (210, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (301, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (302, 1, 'Wear', 'Signs of wear');
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (303, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (304, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (305, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (306, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (307, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (308, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (309, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (310, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (311, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (401, 1, 'Fracture', 'Small fracture at top of tooth');
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (402, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (403, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (404, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (405, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (406, 1, 'Recession', 'Signs of recession');
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (407, 1, 'Gingivitis', null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (408, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (409, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (410, 1, null, null);
-INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
-VALUES (411, 1, null, null);
-
 CREATE TABLE cremation(
     cremation_id SERIAL PRIMARY KEY,
     cremation_patient_id INTEGER NOT NULL,
-    cremation_clinic_id INTEGER NOT NULL,
+    cremation_clinic_id uuid NOT NULL,
     cremation_form VARCHAR(255) NOT NULL,
     cremation_owner_contacted BOOLEAN NOT NULL,
     cremation_date_collected DATE,
@@ -253,35 +168,40 @@ CREATE TABLE cremation(
 );
 
 -- INSERT EXAMPLE CLINICS
-INSERT INTO clinic(clinic_name, clinic_address) 
-VALUES ('Valley Vets', '10 Kilmacud Lane, Dublin 4');
-INSERT INTO clinic(clinic_name, clinic_address) 
-VALUES ('Country Choice', 'Sarsfield Street, Nenagh, Tipperary');
+INSERT INTO clinic(clinic_id, clinic_name, clinic_address) 
+VALUES ('292a485f-a56a-4938-8f1a-bbbbbbbbbbb1', 'Valley Vets', '10 Kilmacud Lane, Dublin 4');
+INSERT INTO clinic(clinic_id, clinic_name, clinic_address) 
+VALUES ('292a485f-a56a-4938-8f1a-bbbbbbbbbbb2', 'Country Choice', 'Sarsfield Street, Nenagh, Tipperary');
+
+INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id)
+VALUES ('vet.user', '$2a$10$NxvQrmH4kFNBuGwbC7m1Cus/m21tv3f3CjJMr/KnvEU3jcozWgJoi', 'Vet', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
+INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id)
+VALUES ('ACA.user', '$2a$10$Pdln/9Wv7I8ZgcDrrlqrqOtbjMjL5.YMtx9K4L2RZBRgj680V9s2K', 'ACA', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 
 -- INSERT EXAMPLE CLIENTS
 INSERT INTO client(
     client_forename, client_surname, client_address, client_city, client_county, client_phone, client_email, client_inactive, client_reason_inactive, client_clinic_id) 
-VALUES ('John', 'Doe', '84 Strand st Skerries', 'Skerries', 'Dublin', '0112345', 'john.doe@gmail.com', FALSE, NULL, 1);
+VALUES ('John', 'Doe', '84 Strand st Skerries', 'Skerries', 'Dublin', '0112345', 'john.doe@gmail.com', FALSE, NULL, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO client(
     client_forename, client_surname, client_address, client_city, client_county, client_phone, client_email, client_inactive, client_reason_inactive, client_clinic_id) 
-VALUES ('Jane', 'Doe', 'Unit 35 Finglas Business Centre Jamestown Road Dublin 11', 'Dublin', 'Dublin', '0154321', 'jane.doe@gmail.com', FALSE, NULL, 1);
+VALUES ('Jane', 'Doe', 'Unit 35 Finglas Business Centre Jamestown Road Dublin 11', 'Dublin', 'Dublin', '0154321', 'jane.doe@gmail.com', FALSE, NULL, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO client(
     client_forename, client_surname, client_address, client_city, client_county, client_phone, client_email, client_inactive, client_reason_inactive, client_clinic_id) 
-VALUES ('Calvin', 'Ryan', 'Longford rd Mullingar', 'Mullingar', 'Westmeath', '06112244', 'crryan@gmail.com', TRUE, 'Client Relocating', 1);
+VALUES ('Calvin', 'Ryan', 'Longford rd Mullingar', 'Mullingar', 'Westmeath', '06112244', 'crryan@gmail.com', TRUE, 'Client Relocating', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO client(
     client_forename, client_surname, client_address, client_city, client_county, client_phone, client_email, client_inactive, client_reason_inactive, client_clinic_id) 
-VALUES ('Ashlea', 'McGee', '10 Kenyon St', 'Nenagh', 'Tipperary', '06712345', 'mcgeeashlea@gmail.com', FALSE, NULL, 2);
+VALUES ('Ashlea', 'McGee', '10 Kenyon St', 'Nenagh', 'Tipperary', '06712345', 'mcgeeashlea@gmail.com', FALSE, NULL, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO client(
     client_forename, client_surname, client_address, client_city, client_county, client_phone, client_email, client_inactive, client_reason_inactive, client_clinic_id) 
-VALUES ('Conn', 'Slattery', '6 Vandeleur st Kilrush', 'Kilrush', 'Clare', '06154321', 'c.slattery.com', FALSE, NULL, 2);
+VALUES ('Conn', 'Slattery', '6 Vandeleur st Kilrush', 'Kilrush', 'Clare', '06154321', 'c.slattery.com', FALSE, NULL, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO client(
     client_forename, client_surname, client_address, client_city, client_county, client_phone, client_email, client_inactive, client_reason_inactive, client_clinic_id) 
-VALUES ('Ron', 'Sullivan', 'Limerick Road', 'Tullahedy', 'Tipperary', '067876567', 'ronniesullivan@gmail.com', TRUE, 'Client Deceased', 2);
+VALUES ('Ron', 'Sullivan', 'Limerick Road', 'Tullahedy', 'Tipperary', '067876567', 'ronniesullivan@gmail.com', TRUE, 'Client Deceased', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 
 -- INSERT EXAMPLE PATIENTS
 INSERT INTO patient(
     patient_name, patient_age, patient_species, patient_breed, patient_sex, patient_color, patient_microchip, patient_inactive, patient_reason_inactive, patient_client_id) 
-VALUES ('Scout', 8, 'Canine', 'German Shepherd', 'FN', 'Black', '123451234512345', FALSE, NULL, 1);
+VALUES ('Scout', 8, 'Canine', 'German Shepherd Dog', 'FN', 'Black', '123451234512345', FALSE, NULL, 1);
 INSERT INTO patient(
     patient_name, patient_age, patient_species, patient_breed, patient_sex, patient_color, patient_microchip, patient_inactive, patient_reason_inactive, patient_client_id) 
 VALUES ('Holly', 16, 'Feline', 'European Shorthair', 'FN', 'Black', '647593647560908', FALSE, NULL, 1);
@@ -337,72 +257,134 @@ VALUES ('Buprenorphine', 'https://rb.gy/baqkt0');
 INSERT INTO drug(drug_name, drug_link) 
 VALUES ('Butorphanol', 'https://rb.gy/v91lqi');
 
--- ENTER DRUGS INTO DRUG TABLE 
+-- INSERT EXAMPLE DRUG STOCK
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('101', '2024-08-23', 20.00, 'ml', 20.00, '10mg/ml', 1, 1);
+VALUES ('101', '2024-08-23', 20.00, 'ml', 17.30, '10mg/ml', 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('102', '2025-09-23', 20.00, 'ml', 20.00, '10mg/ml', 1, 1);
+VALUES ('102', '2025-09-23', 20.00, 'ml', 20.00, '10mg/ml', 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('201', '2024-09-27', 100.00, 'ml', 100.00, '200mg/ml', 2, 1);
+VALUES ('201', '2024-09-27', 100.00, 'ml', 97.30, '200mg/ml', 2, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('202', '2026-04-22', 100.00, 'ml', 100.00, '200mg/ml', 2, 1);
+VALUES ('202', '2026-04-22', 100.00, 'ml', 100.00, '200mg/ml', 2, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('301', '2025-03-23', 20.00, 'ml', 20.00, '50ug/ml', 3, 1);
+VALUES ('301', '2025-03-23', 20.00, 'ml', 17.30, '50ug/ml', 3, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('302', '2022-03-12', 20.00, 'ml', 20.00, '50ug/ml', 3, 1);
+VALUES ('302', '2022-03-12', 20.00, 'ml', 20.00, '50ug/ml', 3, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('401', '2023-06-12', 20.00, 'ml', 20.00, '100mg/ml', 4, 1);
+VALUES ('401', '2023-06-12', 20.00, 'ml', 17.30, '100mg/ml', 4, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('402', '2027-07-17', 20.00, 'ml', 20.00, '100mg/ml', 4, 1);
+VALUES ('402', '2027-07-17', 20.00, 'ml', 20.00, '100mg/ml', 4, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('501', '2027-05-11', 10.00, 'ml', 10.00, '50ug/ml', 5, 1);
+VALUES ('501', '2027-05-11', 10.00, 'ml', 7.30, '50ug/ml', 5, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('502', '2022-08-11', 10.00, 'ml', 10.00, '50ug/ml', 5, 1);
+VALUES ('502', '2022-08-11', 10.00, 'ml', 10.00, '50ug/ml', 5, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('601', '2022-02-18', 20.00, 'ml', 20.00, '50mg/ml', 6, 1);
+VALUES ('601', '2022-02-18', 20.00, 'ml', 17.30, '50mg/ml', 6, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('602', '2024-01-19', 20.00, 'ml', 20.00, '50mg/ml', 6, 1);
+VALUES ('602', '2024-01-19', 20.00, 'ml', 20.00, '50mg/ml', 6, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('701', '2025-12-19', 10.00, 'ml', 10.00, '0.3mg/ml', 7, 1);
+VALUES ('701', '2025-12-19', 10.00, 'ml', 7.30, '0.3mg/ml', 7, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('702', '2029-08-28', 10.00, 'ml', 10.00, '0.3mg/ml', 7, 1);
+VALUES ('702', '2029-08-28', 10.00, 'ml', 10.00, '0.3mg/ml', 7, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('801', '2026-11-24', 10.00, 'ml', 10.00, '10mg/ml', 8, 1);
+VALUES ('801', '2026-11-24', 10.00, 'ml', 7.30, '10mg/ml', 8, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('802', '2025-09-12', 10.00, 'ml', 10.00, '10mg/ml', 8, 1);
+VALUES ('802', '2025-09-12', 10.00, 'ml', 10.00, '10mg/ml', 8, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('103', '2024-08-23', 20.00, 'ml', 20.00, '10mg/ml', 1, 2);
+VALUES ('103', '2024-08-23', 20.00, 'ml', 20.00, '10mg/ml', 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('104', '2025-09-23', 20.00, 'ml', 20.00, '10mg/ml', 1, 2);
+VALUES ('104', '2025-09-23', 20.00, 'ml', 20.00, '10mg/ml', 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('203', '2024-09-27', 100.00, 'ml', 100.00, '200mg/ml', 2, 2);
+VALUES ('203', '2024-09-27', 100.00, 'ml', 100.00, '200mg/ml', 2, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('204', '2026-04-22', 100.00, 'ml', 100.00, '200mg/ml', 2, 2);
+VALUES ('204', '2026-04-22', 100.00, 'ml', 100.00, '200mg/ml', 2, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('303', '2025-03-23', 20.00, 'ml', 20.00, '50ug/ml', 3, 2);
+VALUES ('303', '2025-03-23', 20.00, 'ml', 20.00, '50ug/ml', 3, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('304', '2022-03-12', 20.00, 'ml', 20.00, '50ug/ml', 3, 2);
+VALUES ('304', '2022-03-12', 20.00, 'ml', 20.00, '50ug/ml', 3, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('403', '2023-06-12', 20.00, 'ml', 20.00, '100mg/ml', 4, 2);
+VALUES ('403', '2023-06-12', 20.00, 'ml', 20.00, '100mg/ml', 4, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('404', '2027-07-17', 20.00, 'ml', 20.00, '100mg/ml', 4, 2);
+VALUES ('404', '2027-07-17', 20.00, 'ml', 20.00, '100mg/ml', 4, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('503', '2027-05-11', 10.00, 'ml', 10.00, '50ug/ml', 5, 2);
+VALUES ('503', '2027-05-11', 10.00, 'ml', 10.00, '50ug/ml', 5, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('504', '2022-08-11', 10.00, 'ml', 10.00, '50ug/ml', 5, 2);
+VALUES ('504', '2022-08-11', 10.00, 'ml', 10.00, '50ug/ml', 5, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('603', '2022-02-18', 20.00, 'ml', 20.00, '50mg/ml', 6, 2);
+VALUES ('603', '2022-02-18', 20.00, 'ml', 20.00, '50mg/ml', 6, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('604', '2024-01-19', 20.00, 'ml', 20.00, '50mg/ml', 6, 2);
+VALUES ('604', '2024-01-19', 20.00, 'ml', 20.00, '50mg/ml', 6, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('703', '2025-12-19', 10.00, 'ml', 10.00, '0.3mg/ml', 7, 2);
+VALUES ('703', '2025-12-19', 10.00, 'ml', 10.00, '0.3mg/ml', 7, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('704', '2029-08-28', 10.00, 'ml', 10.00, '0.3mg/ml', 7, 2);
+VALUES ('704', '2029-08-28', 10.00, 'ml', 10.00, '0.3mg/ml', 7, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('803', '2026-11-24', 10.00, 'ml', 10.00, '10mg/ml', 8, 2);
+VALUES ('803', '2026-11-24', 10.00, 'ml', 10.00, '10mg/ml', 8, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
 INSERT INTO drug_stock(drug_batch_id, drug_expiry_date, drug_quantity, drug_quantity_measure, drug_quantity_remaining, drug_concentration, drug_stock_drug_id, drug_stock_clinic_id) 
-VALUES ('804', '2025-09-12', 10.00, 'ml', 10.00, '10mg/ml', 8, 2);
+VALUES ('804', '2025-09-12', 10.00, 'ml', 10.00, '10mg/ml', 8, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
+
+-- INSERT EXAMPLE DRUG LOGS
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-09-22', '101', 1, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2022-01-18', '101', 2, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2021-06-26', '101', 4, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-04-19', '201', 2, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2021-06-13', '201', 4, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2022-03-23', '201', 5, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-03-22', '301', 1, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2021-08-24', '301', 2, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2021-11-16', '301', 1, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-11-22', '401', 4, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2022-03-18', '401', 3, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2022-01-16', '401', 5, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-06-22', '501', 6, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2021-05-18', '501', 1, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2021-05-16', '501', 2, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-06-22', '601', 4, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2021-09-18', '601', 2, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2021-07-16', '601', 3, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-04-22', '701', 2, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2021-08-18', '701', 5, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2021-09-16', '701', 6, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('0.5', '2021-11-22', '801', 6, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.0', '2022-01-18', '801', 2, 1);
+INSERT INTO drug_log(drug_quantity_given, drug_date_administered, drug_log_drug_stock_id, drug_patient_id, drug_staff_id) 
+VALUES ('1.2', '2021-12-16', '801', 4, 1);
+
+-- INSERT XRAY EXAMPLE
+INSERT INTO xray(xray_date, xray_image_quality, xray_kV, xray_mAs, xray_position, xray_patient_id, xray_staff_id, xray_clinic_id) 
+VALUES ('2022-02-26', 'Underexposed', 1.2, 1.4, 'Lateral', 1, 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
+INSERT INTO xray(xray_date, xray_image_quality, xray_kV, xray_mAs, xray_position, xray_patient_id, xray_staff_id, xray_clinic_id) 
+VALUES ('2022-03-21', 'Overexposed', 1.6, 1.8, 'Supinated', 3, 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
+INSERT INTO xray(xray_date, xray_image_quality, xray_kV, xray_mAs, xray_position, xray_patient_id, xray_staff_id, xray_clinic_id) 
+VALUES ('2021-11-12', 'Excellent', 1.1, 1.3, 'Pronated', 5, 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
+INSERT INTO xray(xray_date, xray_image_quality, xray_kV, xray_mAs, xray_position, xray_patient_id, xray_staff_id, xray_clinic_id) 
+VALUES ('2021-08-14', 'Good', 1.9, 2.1, 'Lateral Decubitus', 3, 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
+INSERT INTO xray(xray_date, xray_image_quality, xray_kV, xray_mAs, xray_position, xray_patient_id, xray_staff_id, xray_clinic_id) 
+VALUES ('2021-02-16', 'Overexposed', 2.1, 2.3, 'Supinated', 2, 1, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 
 -- INSERT EXAMPLE DENTALS
 INSERT INTO tooth(tooth_id, tooth_patient_id, tooth_problem, tooth_note) 
@@ -577,6 +559,6 @@ VALUES (411, 5, null, null);
 
 -- INSERT EXAMPLES INTO CREMATION
 INSERT INTO cremation(cremation_patient_id, cremation_clinic_id, cremation_form, cremation_owner_contacted, cremation_date_collected, cremation_date_ashes_returned_practice, cremation_date_ashes_returned_owner) 
-VALUES (3, 1, 'Urn', TRUE, '2022-03-22', '2022-03-27', '2022-03-30');
+VALUES (3, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1', 'Urn', TRUE, '2022-03-22', '2022-03-27', '2022-03-30');
 INSERT INTO cremation(cremation_patient_id, cremation_clinic_id, cremation_form, cremation_owner_contacted, cremation_date_collected, cremation_date_ashes_returned_practice, cremation_date_ashes_returned_owner) 
-VALUES (9, 2, 'Tribute Box', FALSE, '2022-03-22', '2022-03-27', NULL);
+VALUES (9, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2', 'Tribute Box', FALSE, '2022-03-22', '2022-03-27', NULL);

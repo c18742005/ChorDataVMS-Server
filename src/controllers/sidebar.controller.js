@@ -6,7 +6,7 @@ const db = require("../config/database");
 /*
   GET: /sidebar/ Retrieve data for use in the sidebar
   Request params:
-    - (Number) staff_clinic_id: ID of the clinic
+    - (String): ID of the clinic
 
   Returns: 
     200: JSON clinic data
@@ -14,7 +14,7 @@ const db = require("../config/database");
 */
 exports.loadSidebar = async (req, res) => {
   try{
-    const clinicId = parseInt(req.staff_member.staff_clinic_id);
+    const clinicId = req.staff_member.staff_clinic_id;
 
     const staff_member = await db.query(
       `SELECT clinic_name

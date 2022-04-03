@@ -7,13 +7,13 @@ describe("GET /api/cremations/clinic/:id", () => {
     test("Should respond with a 200 status code", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/cremations/clinic/1").set("token", token)
+      const response = await request(app).get("/api/cremations/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -23,7 +23,7 @@ describe("GET /api/cremations/clinic/:id", () => {
 
   describe("When user is not authenticated", () => {
     test("Should respond with a 403 status code", async () => {
-      const response = await request(app).get("/api/cremations/clinic/-1")
+      const response = await request(app).get("/api/cremations/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
 
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -59,7 +59,7 @@ describe("POST /api/cremations", () => {
       jest.spyOn(CremationController, "insertCremation").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -116,7 +116,7 @@ describe("POST /api/cremations", () => {
       }
   
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -174,7 +174,7 @@ describe("PUT /api/cremations/:id", () => {
       }
   
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       

@@ -71,7 +71,7 @@ exports.findPatientByClientId = async (req, res) => {
 /*
   GET: /patients/clinic/:id Retrieve all patients treated in a clinic by the clinic ID
   Request params:
-    - (Number) clinic_id: ID of the clinic the patients belong to
+    - (String) clinic_id: ID of the clinic the patients belong to
 
   Returns: 
     200: JSON patients data
@@ -80,7 +80,7 @@ exports.findPatientByClientId = async (req, res) => {
 */
 exports.findPatientByClinicId = async (req, res) => {
   try{
-    const clinic_id = parseInt(req.params.id);
+    const clinic_id = req.params.id;
 
     // Check if clinic exists
     const clinic = await db.query(
@@ -114,7 +114,7 @@ exports.findPatientByClinicId = async (req, res) => {
   GET: /patients/species/:species/clinic/:clinic_id
     Retrieve all patients of a particular species treated in a clinic by the clinic ID
   Request params:
-    - (Number) clinic_id: ID of the clinic the patients belong to
+    - (String) clinic_id: ID of the clinic the patients belong to
     - (String) species: The species they wish to retrieve
 
   Returns: 
@@ -124,7 +124,7 @@ exports.findPatientByClinicId = async (req, res) => {
 */
 exports.findSpeciesByClinicId = async (req, res) => {
   try{
-    const clinic_id = parseInt(req.params.id);
+    const clinic_id = req.params.id;
     const species = req.params.species;
 
     const recognised_species = [

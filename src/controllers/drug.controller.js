@@ -38,7 +38,7 @@ exports.listAllDrugs = async (req, res) => {
 */
 exports.findDrugsStockByClinic = async (req, res) => {
   try{
-    const clinicId = parseInt(req.params.id);
+    const clinicId = req.params.id;
 
     // check clinic exists
     const clinic = await db.query(`
@@ -75,7 +75,7 @@ exports.findDrugsStockByClinic = async (req, res) => {
 */
 exports.findDrugStockByClinic = async (req, res) => {
   try{
-    const clinicId = parseInt(req.params.clinicid);
+    const clinicId = req.params.clinicid;
     const drugId = parseInt(req.params.drugid);
 
     // check clinic exists
@@ -124,7 +124,7 @@ exports.findDrugStockByClinic = async (req, res) => {
 */
 exports.findDrugLogByClinic = async (req, res) => {
   try{
-    const clinicId = parseInt(req.params.clinicid);
+    const clinicId = req.params.clinicid;
     const drugId = parseInt(req.params.drugid);
 
     const response = await db.query(

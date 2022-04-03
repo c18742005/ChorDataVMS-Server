@@ -6,7 +6,7 @@ describe("GET /api/staff", () => {
     test("Should respond with a 200 status code", async () => {
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -17,10 +17,10 @@ describe("GET /api/staff", () => {
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
       expect(response.body).toEqual({
-        staff_clinic_id: expect.any(Number),
+        staff_clinic_id: expect.any(String),
         staff_member_id: expect.any(Number),
         staff_role: expect.any(String),
-        staff_username: "test.user"
+        staff_username: "vet.user"
       })
     });
   });

@@ -15,7 +15,7 @@ const { validationResult } = require('express-validator')
 */
 exports.findCremationsByClinicId = async (req, res) => {
   try{
-    const clinicId = parseInt(req.params.id);
+    const clinicId = req.params.id;
 
     const response = await db.query(
       `SELECT 
@@ -50,7 +50,7 @@ exports.findCremationsByClinicId = async (req, res) => {
     - (String) cremation_form: The type of cremation
     - (Boolean) cremation_owner_contacted: If the owner has been contacted 
     - (Number) cremation_patient_id: ID of patient to be cremated
-    - (Number) cremation_clinic_id: ID of clinic cremation belongs to
+    - (String) cremation_clinic_id: ID of clinic cremation belongs to
 
   Returns: 
     201: JSON cremation data

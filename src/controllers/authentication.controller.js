@@ -15,7 +15,7 @@ const { validationResult } = require('express-validator')
     - (String) username: new staff username for the user
     - (String) password: users new password
     - (String) role - The job role they have
-    - (Number) clinic_id - The clinic they are being added to
+    - (String) clinic_id - The clinic they are being added to
 
   Returns: 
     422: Parameters do not pass validation
@@ -35,12 +35,13 @@ exports.registerStaffMember = async (req, res) => {
 
   // Destructure the request.body
   const { username, password, role, clinic_id } = req.body;
+  const usernameToLower = username.toLowerCase();
   
   try {
     // Check if username taken
     const staff_member = await db.query(
       "SELECT * FROM staff_member WHERE staff_username = $1", 
-      [username]
+      [usernameToLower]
     );
 
     // Send error res as username is taken
@@ -64,7 +65,7 @@ exports.registerStaffMember = async (req, res) => {
     const salt = await bcrypt.genSalt(saltRound);
     const bcryptPassword = await bcrypt.hash(password, salt);
 
-    const staff_info = await this.insertStaff(username, bcryptPassword, role, clinic_id);
+    const staff_info = await this.insertStaff(usernameToLower, bcryptPassword, role, clinic_id);
 
     // Generate a jwt token
     if (staff_info !== 0) {
@@ -104,9 +105,10 @@ exports.loginStaffMember = async (req, res) => {
 
     // Destructure the request.body
     const { username, password } = req.body;
+    const usernameToLower = username.toLowerCase();
 
     // Check staff member exists
-    const staff_member = await this.getStaffByUsername(username);
+    const staff_member = await this.getStaffByUsername(usernameToLower);
 
     // Return 401 error as username or password is incorrect
     if(staff_member.rows.length === 0) {

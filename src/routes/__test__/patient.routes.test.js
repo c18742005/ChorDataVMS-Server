@@ -6,7 +6,7 @@ describe("GET api/patients/:id", () => {
   describe("When info is correct", () => {
     test("Should respond with a 200 status code and return patient object", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -21,7 +21,7 @@ describe("GET api/patients/:id", () => {
         patient_name: 'Scout',
         patient_age: 8,
         patient_species: 'Canine',
-        patient_breed: 'German Shepherd',
+        patient_breed: 'German Shepherd Dog',
         patient_sex: 'FN',
         patient_color: 'Black',
         patient_microchip: '123451234512345',
@@ -45,7 +45,7 @@ describe("GET api/patients/:id", () => {
   describe("When incorrect patient ID is supplied", () => {
     test("Should respond with a 400 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -64,7 +64,7 @@ describe("GET api/patients/client/:id", () => {
   describe("When info is correct", () => {
     test("Should respond with a 200 status code and return patient object", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -91,7 +91,7 @@ describe("GET api/patients/client/:id", () => {
   describe("When incorrect client ID is supplied", () => {
     test("Should respond with a 400 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -110,13 +110,13 @@ describe("GET api/patients/clinic/:id", () => {
   describe("When info is correct", () => {
     test("Should respond with a 200 status code and return patient object", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/patients/clinic/1").set("token", token)
+      const response = await request(app).get("/api/patients/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -126,7 +126,7 @@ describe("GET api/patients/clinic/:id", () => {
 
   describe("When user is not authenticated", () => {
     test("Should respond with a 403 status code and appropriate message", async () => {
-      const response = await request(app).get("/api/patients/clinic/1")
+      const response = await request(app).get("/api/patients/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
 
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -137,13 +137,13 @@ describe("GET api/patients/clinic/:id", () => {
   describe("When incorrect clinic ID is supplied", () => {
     test("Should respond with a 400 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/patients/clinic/-1").set("token", token)
+      const response = await request(app).get("/api/patients/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb9").set("token", token)
 
       expect(response.statusCode).toBe(400)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -156,13 +156,13 @@ describe("GET api/patients/species/:species/clinic/:clinic_id", () => {
   describe("When info is correct", () => {
     test("Should respond with a 200 status code and return patient object", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/patients/species/Canine/clinic/1").set("token", token)
+      const response = await request(app).get("/api/patients/species/Canine/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -172,7 +172,7 @@ describe("GET api/patients/species/:species/clinic/:clinic_id", () => {
 
   describe("When user is not authenticated", () => {
     test("Should respond with a 403 status code and appropriate message", async () => {
-      const response = await request(app).get("/api/patients/species/Canine/clinic/1")
+      const response = await request(app).get("/api/patients/species/Canine/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1")
 
       expect(response.statusCode).toBe(403)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -183,13 +183,13 @@ describe("GET api/patients/species/:species/clinic/:clinic_id", () => {
   describe("When incorrect clinic ID is supplied", () => {
     test("Should respond with a 400 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/patients/species/Canine/clinic/-1").set("token", token)
+      const response = await request(app).get("/api/patients/species/Canine/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb9").set("token", token)
 
       expect(response.statusCode).toBe(400)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -200,13 +200,13 @@ describe("GET api/patients/species/:species/clinic/:clinic_id", () => {
   describe("When incorrect species is supplied", () => {
     test("Should respond with a 400 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
       const res = await request(app).post("/api/login").send(staffBody)
       const token = res.body.token
-      const response = await request(app).get("/api/patients/species/Aquatic/clinic/1").set("token", token)
+      const response = await request(app).get("/api/patients/species/Aquatic/clinic/292a485f-a56a-4938-8f1a-bbbbbbbbbbb1").set("token", token)
 
       expect(response.statusCode).toBe(400)
       expect(response.headers['content-type']).toEqual(expect.stringContaining('json'))
@@ -244,7 +244,7 @@ describe("POST /api/patients", () => {
       jest.spyOn(PatientController, "insertPatient").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -283,7 +283,7 @@ describe("POST /api/patients", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -300,7 +300,7 @@ describe("POST /api/patients", () => {
   describe("When info is missing", () => {
     test("Should respond with a 422 status code and return error messages", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -328,7 +328,7 @@ describe("POST /api/patients", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -356,7 +356,7 @@ describe("POST /api/patients", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -384,7 +384,7 @@ describe("POST /api/patients", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -412,7 +412,7 @@ describe("POST /api/patients", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -442,7 +442,7 @@ describe("POST /api/patients", () => {
       jest.spyOn(PatientController, "insertPatient").mockReturnValueOnce(500);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -485,7 +485,7 @@ describe("PUT /api/patients/:id", () => {
       jest.spyOn(PatientController, "updatePatient").mockReturnValueOnce(userPayload)
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -522,7 +522,7 @@ describe("PUT /api/patients/:id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -539,7 +539,7 @@ describe("PUT /api/patients/:id", () => {
   describe("When info is missing", () => {
     test("Should respond with a 422 status code and return error messages", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -566,7 +566,7 @@ describe("PUT /api/patients/:id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -593,7 +593,7 @@ describe("PUT /api/patients/:id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -620,7 +620,7 @@ describe("PUT /api/patients/:id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -647,7 +647,7 @@ describe("PUT /api/patients/:id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -676,7 +676,7 @@ describe("PUT /api/patients/:id", () => {
       jest.spyOn(PatientController, "updatePatient").mockReturnValueOnce(500);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -701,7 +701,7 @@ describe("PUT /api/patients/deactivate/:id", () => {
       jest.spyOn(PatientController, "deactivatePatient").mockReturnValueOnce(201);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -728,7 +728,7 @@ describe("PUT /api/patients/deactivate/:id", () => {
   describe("When info is missing", () => {
     test("Should respond with a 422 status code and return error messages", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -749,7 +749,7 @@ describe("PUT /api/patients/deactivate/:id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -772,7 +772,7 @@ describe("PUT /api/patients/deactivate/:id", () => {
       jest.spyOn(PatientController, "deactivatePatient").mockReturnValueOnce(500);
 
       const staffBody = {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -793,7 +793,7 @@ describe("PUT api/patients/reactivate/:id", () => {
       jest.spyOn(PatientController, "reactivatePatient").mockReturnValueOnce(201);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -810,7 +810,7 @@ describe("PUT api/patients/reactivate/:id", () => {
   describe("When patient does not exist", () => {
     test("Should respond with a 400 status code and return error messages", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -827,7 +827,7 @@ describe("PUT api/patients/reactivate/:id", () => {
   describe("When patient is already active", () => {
     test("Should respond with a 400 status code and return error messages", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       

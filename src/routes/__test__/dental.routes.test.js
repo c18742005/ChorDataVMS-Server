@@ -6,7 +6,7 @@ describe("GET /api/dentals/:id", () => {
   describe("When info is correct", () => {
     test("Should respond with a 200 status code and return dental object", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -33,7 +33,7 @@ describe("GET /api/dentals/:id", () => {
   describe("When incorrect patient ID is supplied", () => {
     test("Should respond with a 400 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -62,7 +62,7 @@ describe("POST /api/dentals/:id", () => {
   describe("When patient already has a dental", () => {
     test("Should respond with a 409 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -79,7 +79,7 @@ describe("POST /api/dentals/:id", () => {
   describe("When patient is deactivated", () => {
     test("Should respond with a 403 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -96,7 +96,7 @@ describe("POST /api/dentals/:id", () => {
   describe("When patient does not exist", () => {
     test("Should respond with a 400 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -113,7 +113,7 @@ describe("POST /api/dentals/:id", () => {
   describe("When patient is not a cat or dog", () => {
     test("Should respond with a 403 status code and appropriate message", async () => {
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -132,7 +132,7 @@ describe("POST /api/dentals/:id", () => {
       jest.spyOn(DentalController, "insertTooth").mockReturnValueOnce(500);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -165,7 +165,7 @@ describe("PUT /dentals/tooth/:tooth_id/patient/:patient_id", () => {
       jest.spyOn(DentalController, "updateTooth").mockReturnValueOnce(userPayload);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -198,7 +198,7 @@ describe("PUT /dentals/tooth/:tooth_id/patient/:patient_id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -220,7 +220,7 @@ describe("PUT /dentals/tooth/:tooth_id/patient/:patient_id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -242,7 +242,7 @@ describe("PUT /dentals/tooth/:tooth_id/patient/:patient_id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -264,7 +264,7 @@ describe("PUT /dentals/tooth/:tooth_id/patient/:patient_id", () => {
       }
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       
@@ -288,7 +288,7 @@ describe("PUT /dentals/tooth/:tooth_id/patient/:patient_id", () => {
       jest.spyOn(DentalController, "updateTooth").mockReturnValueOnce(500);
 
       const staffBody =  {
-        username: "test.user",
+        username: "vet.user",
         password: "P@ssword1"
       }
       

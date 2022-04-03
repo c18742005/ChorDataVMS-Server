@@ -43,8 +43,8 @@ exports.validate = (method) => {
         ).exists().isAlphanumeric("en-GB", {ignore: " -"}).isIn(["Vet", "Nurse", "Receptionist", "ACA"]).trim().escape(),
         body(
           'clinic_id', 
-          'Clinic ID must be made up of numeric characters and not contain +, -, or .'
-        ).isNumeric({no_symbols: true}).trim().escape()
+          'Clinic ID must be a valid ID and must be in the form XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX'
+        ).isUUID().trim().escape()
       ]   
     }
   }

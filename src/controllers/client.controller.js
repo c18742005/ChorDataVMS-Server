@@ -14,7 +14,7 @@ const { validationResult } = require('express-validator')
     - (String) client_county: County client lives in
     -  (String) client_phone: Clients phone number
     -  (String) client_email: Client email address
-    -  (Number) client_clinic_id: ID of clinic client will be associated with
+    -  (String) client_clinic_id: ID of clinic client will be associated with
 
   Returns: 
     201: Token and client details
@@ -83,7 +83,7 @@ exports.findClientById = async (req, res) => {
 */
 exports.findClientsByClinicId = async (req, res) => {
   try{
-    const clinic_id = parseInt(req.params.id);
+    const clinic_id = req.params.id;
 
     const response = await db.query('SELECT * FROM client WHERE client_clinic_id = $1',
       [clinic_id]);

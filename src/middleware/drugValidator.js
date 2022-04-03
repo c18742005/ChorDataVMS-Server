@@ -38,7 +38,7 @@ exports.validate = (method) => {
         body(
           'drug_quantity_given', 
           'Drug quantity must be alphanumeric and cannot be empty')
-          .exists().isNumeric().isLength({min:1, max: 254}).trim()
+          .exists().isFloat({ min: 0.01, max: 999.99 }).trim().escape()
       ]   
     }
   }
