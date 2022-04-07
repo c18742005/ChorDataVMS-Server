@@ -23,7 +23,7 @@ exports.findAnaestheticsByPatientId = async (req, res) => {
     );
 
     if(patient.rows.length === 0) {
-      return res.status(400).json("No such patient with ID supplied");
+      return res.status(401).json("No such patient with ID supplied");
     }
 
     const anaesthetic_sheets = await db.query(
@@ -64,7 +64,7 @@ exports.findAnaestheticById = async (req, res) => {
     );
 
     if(anaesthetic.rows.length === 0) {
-      return res.status(400).json("No such anaesthetic with ID supplied");
+      return res.status(401).json("No such anaesthetic with ID supplied");
     }
 
     const anaesthetic_sheet = await db.query(
@@ -77,10 +77,6 @@ exports.findAnaestheticById = async (req, res) => {
       WHERE a.anaesthetic_id = $1`,
       [anaestheticId]
     );
-
-    if(anaesthetic_sheet.rows.length === 0) {
-      return res.status(500).json("Server error retrieving anaesthetic sheet. Please try again");
-    }
 
     const anaesthetic_periods = await db.query(
       `SELECT *
@@ -139,7 +135,7 @@ exports.addAnaesthetic = async (req, res) => {
 
     // Send error as patient is inactive
     if(patient.rows[0].patient_inactive === true) {
-      return res.status(403).send(
+      return res.status(403).json(
         `${patient.rows[0].patient_name} is inactive.
         Please reactivate the patient before performing the anaesthetic procedure`);
     }
@@ -166,6 +162,7 @@ exports.addAnaesthetic = async (req, res) => {
 
     const anaesthetic = await this.insertAnaesthetic(patient_id, staff_id);
 
+    // Send error as there is an error on the server side
     if(anaesthetic === 500) {
       return res.status(500).json("Server error adding anaesthetic. Please try again");
     }
@@ -211,18 +208,29 @@ exports.addAnaestheticPeriod = async (req, res) => {
       [id]
     );
 
+    // Send error as no anaesthetic exists with this ID
     if(anaesthetic.rows.length === 0) {
       return res.status(400).json("No such anaesthetic sheet with ID supplied");
     }
 
+    // Check heart rate is within specified params
+    if(req.body.hr < 0 || req.body.hr > 400) {
+      return res.status(400).json("Heart rate must be between 0 and 400 BPM");
+    }
+
+    // Check resp. rate is within specified params
+    if(req.body.rr < 0 || req.body.rr > 100) {
+      return res.status(400).json("Resp. rate must be between 0 and 100 BPM");
+    }
+
     // Check oxygen is a valid float 
     if(req.body.oxygen < 0 || req.body.oxygen > 10) {
-      return res.status(400).json("Oxygen must be between 0 and 10");
+      return res.status(400).json("Oxygen must be between 0 and 10 Liters");
     }
 
     // Check agent is a valid float 
     if(req.body.anaesthetic < 0 || req.body.anaesthetic > 5) {
-      return res.status(400).json("Oxygen must be between 0 and 5");
+      return res.status(400).json("Anaesthetic agent must be between 0 and 5 Percent");
     }
 
     const period = await this.insertAnaestheticPeriod(req.body);

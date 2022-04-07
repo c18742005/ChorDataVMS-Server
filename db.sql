@@ -217,10 +217,13 @@ VALUES ('292a485f-a56a-4938-8f1a-bbbbbbbbbbb1', 'Valley Vets', '10 Kilmacud Lane
 INSERT INTO clinic(clinic_id, clinic_name, clinic_address) 
 VALUES ('292a485f-a56a-4938-8f1a-bbbbbbbbbbb2', 'Country Choice', 'Sarsfield Street, Nenagh, Tipperary');
 
+-- INSERT EXAMPLE STAFF MEMBERS
 INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id)
 VALUES ('vet.user', '$2a$10$NxvQrmH4kFNBuGwbC7m1Cus/m21tv3f3CjJMr/KnvEU3jcozWgJoi', 'Vet', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id)
 VALUES ('nurse.user', '$2a$10$D7a4.onIG5iPlTYB4yABxeQLvjbUZmdk8J3sPoDku3ltQpsGij2mi', 'Nurse', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2');
+INSERT INTO staff_member(staff_username, staff_password, staff_role, staff_clinic_id)
+VALUES ('reception.user', '$2a$10$NxvQrmH4kFNBuGwbC7m1Cus/m21tv3f3CjJMr/KnvEU3jcozWgJoi', 'Receptionist', '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1');
 
 -- INSERT EXAMPLE CLIENTS
 INSERT INTO client(
