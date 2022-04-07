@@ -1,4 +1,5 @@
 const db = require("../config/database");
+const { validationResult } = require('express-validator');
 
 /*
   GET: /anaesthetic/:id Retrieve all anaesthetic sheets of a patient by their ID
@@ -7,7 +8,7 @@ const db = require("../config/database");
 
   Returns: 
     200: JSON anaesthetic data
-    401: No patient available with this ID
+    400: No patient available with this ID
     500: Error on the server side
 */
 exports.findAnaestheticsByPatientId = async (req, res) => {
@@ -48,7 +49,7 @@ exports.findAnaestheticsByPatientId = async (req, res) => {
 
   Returns: 
     200: JSON anaesthetic data and periods data
-    401: No anaesthetic available with this ID
+    400: No anaesthetic available with this ID
     500: Error on the server side
 */
 exports.findAnaestheticById = async (req, res) => {
@@ -108,9 +109,18 @@ exports.findAnaestheticById = async (req, res) => {
     201: JSON anaesthetic data
     400: No patient/staff member available with this ID
     403: Patient is inactive or staff member is not authorised 
+    422: Error validating the form
     500: Error on the server side
 */
 exports.addAnaesthetic = async (req, res) => {
+  const errors = validationResult(req);
+
+  // Return validation errors
+  if(!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+
   try{
      // Destructure the request.body
      const { patient_id, staff_id } = req.body;
@@ -177,10 +187,19 @@ exports.addAnaesthetic = async (req, res) => {
 
   Returns: 
     201: JSON anaesthetic period data
-    401: No patient available with this ID
+    400: No patient available with this ID
+    422: Error validating the form
     500: Error on the server side
 */
 exports.addAnaestheticPeriod = async (req, res) => {
+  const errors = validationResult(req);
+
+  // Return validation errors
+  if(!errors.isEmpty()) {
+    res.status(422).json({ errors: errors.array() });
+    return;
+  }
+
   try{
      // Destructure the request.body
      const { id } = req.body;
@@ -194,6 +213,16 @@ exports.addAnaestheticPeriod = async (req, res) => {
 
     if(anaesthetic.rows.length === 0) {
       return res.status(400).json("No such anaesthetic sheet with ID supplied");
+    }
+
+    // Check oxygen is a valid float 
+    if(req.body.oxygen < 0 || req.body.oxygen > 10) {
+      return res.status(400).json("Oxygen must be between 0 and 10");
+    }
+
+    // Check agent is a valid float 
+    if(req.body.anaesthetic < 0 || req.body.anaesthetic > 5) {
+      return res.status(400).json("Oxygen must be between 0 and 5");
     }
 
     const period = await this.insertAnaestheticPeriod(req.body);
