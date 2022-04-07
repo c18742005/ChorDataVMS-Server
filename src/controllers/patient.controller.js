@@ -195,8 +195,11 @@ exports.findPatientHistoryById = async (req, res) => {
       UNION 
       SELECT 'Dental' AS vet_procedure, dental_date_updated AS date_completed FROM dental
       WHERE dental_patient_id = $3
+      UNION 
+      SELECT 'Anaesthetic' AS vet_procedure, anaesthetic_date AS date_completed FROM anaesthetic
+      WHERE anaesthetic_patient_id = $4
       ORDER BY date_completed DESC;`,
-      [patientId, patientId, patientId]);
+      [patientId, patientId, patientId, patientId]);
 
     res.status(200).send(response.rows);
   } catch (err) {

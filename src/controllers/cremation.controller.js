@@ -203,7 +203,7 @@ exports.updateCremationById = async (req, res) => {
       );
     }
 
-     // Send error as patient acc is not deactivated
+     // Send error as patient acc is not deactivated for correct reason
      if(patient_status.rows[0].patient_reason_inactive !== 'Patient Deceased') {
       return res.status(403).json(
         `Patient ${patient_status.rows[0].patient_name} is not marked as deceased.
@@ -225,19 +225,19 @@ exports.updateCremationById = async (req, res) => {
     if(cremation_date_collected === '') {
       date_collected = null;
     } else {
-      date_collected = cremation_date_collected;
+      date_collected = new Date(cremation_date_collected);
     }
 
     if(cremation_date_ashes_returned_practice === '') {
       date_returned_practice = null;
     } else {
-      date_returned_practice = cremation_date_ashes_returned_practice;
+      date_returned_practice = new Date(cremation_date_ashes_returned_practice);
     }
 
     if(cremation_date_ashes_returned_owner === '') {
       date_returned_owner = null;
     } else {
-      date_returned_owner = cremation_date_ashes_returned_owner;
+      date_returned_owner = new Date(cremation_date_ashes_returned_owner);
     }
     
     // Update the cremation DB record

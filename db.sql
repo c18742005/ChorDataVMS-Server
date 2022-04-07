@@ -1,6 +1,8 @@
 CREATE DATABASE chordata;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+DROP TABLE IF EXISTS anaesthetic_period;
+DROP TABLE IF EXISTS anaesthetic;
 DROP TABLE IF EXISTS cremation;
 DROP TABLE IF EXISTS tooth;
 DROP TABLE IF EXISTS dental;
@@ -176,6 +178,37 @@ CREATE TABLE cremation(
         FOREIGN KEY (cremation_clinic_id)
             REFERENCES clinic(clinic_id)
             ON DELETE CASCADE
+);
+
+CREATE TABLE anaesthetic(
+    anaesthetic_id SERIAL PRIMARY KEY,
+    anaesthetic_patient_id INTEGER NOT NULL,
+    anaesthetic_date DATE,
+    anaesthetic_staff_id INTEGER NOT NULL,
+    CONSTRAINT fk_anaesthetic_patient
+        FOREIGN KEY (anaesthetic_patient_id)
+            REFERENCES patient(patient_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_anaesthetic_staff_id
+        FOREIGN KEY (anaesthetic_staff_id)
+            REFERENCES staff_member(staff_member_id)
+            ON DELETE CASCADE
+);
+
+CREATE TABLE anaesthetic_period(
+    anaesthetic_id INTEGER NOT NULL,
+    anaesthetic_period INTEGER NOT NULL,
+    anaesthetic_hr INTEGER NOT NULL,
+    anaesthetic_rr INTEGER NOT NULL,
+    anaesthetic_oxygen NUMERIC(4, 2) NOT NULL,
+    anaesthetic_agent NUMERIC(4, 2) NOT NULL,
+    anaesthetic_eye_pos VARCHAR(8) NOT NULL,
+    anaesthetic_reflexes BOOLEAN NOT NULL,
+    CONSTRAINT fk_anaesthetic
+        FOREIGN KEY (anaesthetic_id)
+            REFERENCES anaesthetic(anaesthetic_id)
+            ON DELETE CASCADE,
+    PRIMARY KEY(anaesthetic_id, anaesthetic_period)
 );
 
 -- INSERT EXAMPLE CLINICS
@@ -579,3 +612,172 @@ INSERT INTO cremation(cremation_patient_id, cremation_clinic_id, cremation_form,
 VALUES (3, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb1', 'Urn', TRUE, '2022-03-22', '2022-03-27', '2022-03-30');
 INSERT INTO cremation(cremation_patient_id, cremation_clinic_id, cremation_form, cremation_owner_contacted, cremation_date_collected, cremation_date_ashes_returned_practice, cremation_date_ashes_returned_owner) 
 VALUES (9, '292a485f-a56a-4938-8f1a-bbbbbbbbbbb2', 'Tribute Box', FALSE, '2022-03-22', '2022-03-27', NULL);
+
+-- INSERT EXAMPLES INTO ANAESTHETIC
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (1, '2022-02-02', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (2, '2022-01-22', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (4, '2021-05-12', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (1, '2021-03-21', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (2, '2021-12-19', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (10, '2022-02-02', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (8, '2022-01-22', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (11, '2021-05-12', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (8, '2021-03-21', 1);
+INSERT INTO anaesthetic(anaesthetic_patient_id, anaesthetic_date, anaesthetic_staff_id) 
+VALUES (11, '2021-12-19', 1);
+
+-- INSERT EXAMPLE ANAESTHETIC PERIODS
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 30, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (1, 35, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (2, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (2, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (2, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (2, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (2, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (2, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (3, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (3, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (3, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (3, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (3, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (3, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (3, 30, 88, 28, 3.0, 1.7, 'Central', 'No');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 30, 83, 25, 2.8, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 35, 83, 25, 2.8, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (4, 40, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (5, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (5, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (5, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (5, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (5, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (5, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (6, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (6, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (6, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (6, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (6, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (6, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (7, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (7, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (7, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (7, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (7, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (7, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 30, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (8, 35, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (9, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (9, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (9, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (9, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (9, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (10, 0, 80, 24, 3.0, 1.5, 'Ventral', 'Yes');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (10, 5, 83, 25, 3.0, 1.6, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (10, 10, 82, 22, 3.0, 1.4, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (10, 15, 88, 28, 3.0, 1.7, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (10, 20, 85, 26, 3.0, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (10, 25, 83, 25, 2.8, 1.5, 'Central', 'No');
+INSERT INTO anaesthetic_period(anaesthetic_id, anaesthetic_period, anaesthetic_hr, anaesthetic_rr, anaesthetic_oxygen, anaesthetic_agent, anaesthetic_eye_pos, anaesthetic_reflexes) 
+VALUES (10, 30, 88, 28, 3.0, 1.7, 'Central', 'No');
