@@ -9,7 +9,7 @@ const jwtGenerator = (staff_member) => {
         staff_member: staff_member
     }
 
-    return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1hr"});
+    return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "8hr"});
 }
 
 module.exports = jwtGenerator;
